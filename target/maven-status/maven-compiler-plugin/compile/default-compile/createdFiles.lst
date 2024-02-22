@@ -1,0 +1,13 @@
+tg/bot/model/User.class
+tg/bot/repository/OrderRepository.class
+tg/bot/service/UserService.class
+tg/bot/model/Product.class
+tg/bot/config/BotInit.class
+tg/bot/config/BotConfig.class
+tg/bot/repository/UserRepository.class
+tg/bot/repository/ProductRepository.class
+tg/bot/model/Order.class
+tg/bot/service/OrderService.class
+tg/bot/bot/TelegramBot.class
+tg/bot/JabotApplication.class
+tg/bot/service/ProductService.class

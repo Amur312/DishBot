@@ -1,0 +1,13 @@
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/repository/OrderRepository.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/service/ProductService.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/model/Product.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/config/BotInit.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/model/User.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/service/OrderService.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/config/BotConfig.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/bot/TelegramBot.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/repository/ProductRepository.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/JabotApplication.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/service/UserService.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/repository/UserRepository.java
+/home/amur/Рабочий стол/DishBot/src/main/java/tg/bot/model/Order.java
