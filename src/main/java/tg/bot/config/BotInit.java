@@ -25,7 +25,7 @@ public class BotInit {
         try {
             telegramBotsApi.registerBot(bot);
         } catch (TelegramApiException e) {
-            logger.error("Error while registering bot", e);
+            logger.error("Ошибка регистрации!", e);
             throw new RuntimeException(e);
         }
     }
