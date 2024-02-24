@@ -21,4 +21,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User save(User user);
 
     boolean existsByChatId(Long chatId);
+    boolean existsByPhoneNumber(String phoneNumber);
 }

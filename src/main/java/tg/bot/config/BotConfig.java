@@ -2,8 +2,13 @@ package tg.bot.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import tg.bot.bot.TelegramBot;
+import tg.bot.handlers.Impl.UpdateHandler;
+
+import java.util.List;
 
 @Configuration
 @Data
@@ -19,7 +24,6 @@ public class BotConfig {
     public BotConfig() {
 
     }
-
     public BotConfig(@Value("${telegram.bot.token}") String botToken, @Value("${telegram.bot.name}")
     String botName) {
         this.botToken = botToken;

@@ -14,11 +14,13 @@ public class User {
     private String userName;
     @Column(name = "chat_id", nullable = false, unique = true)
     private long chatId;
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
 
-    public User(String userName,long chatId) {
+    public User(String userName, long chatId, String phoneNumber) {
         this.userName = userName;
         this.chatId = chatId;
-
+        this.phoneNumber = phoneNumber;
     }
 
     public User() {
