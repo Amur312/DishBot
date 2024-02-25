@@ -1,5 +1,7 @@
 package tg.bot.handlers.commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -18,11 +20,14 @@ import tg.bot.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class StartCommand implements UpdateHandler {
-    private UserRepository userRepository;
-    private AbsSender absSender;
+    private static final Logger log = LoggerFactory.getLogger(StartCommand.class);
+
+    private final UserRepository userRepository;
+    private final AbsSender absSender;
 
     @Autowired
     public StartCommand(UserRepository userRepository, @Lazy AbsSender absSender) {
@@ -37,65 +42,78 @@ public class StartCommand implements UpdateHandler {
 
     @Override
     public void handleUpdate(Update update) {
-        long chatId = update.getMessage().getChatId();
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String command = update.getMessage().getText().toLowerCase();
-            if (command.equals("/start")) {
-                if (!userRepository.existsByChatId(chatId)) {
-                    requestContact(chatId);
-                } else {
-                    sendMessage(chatId, "Вы уже зарегистрированы.");
-                }
-            }
-        } else if (update.hasMessage() && update.getMessage().hasContact()) {
-            Contact contact = update.getMessage().getContact();
-            String phoneNumber = contact.getPhoneNumber();
-            if (!userRepository.existsByPhoneNumber(phoneNumber)) {
-                User user = new User(update.getMessage().getFrom().getUserName(), chatId, phoneNumber);
+        if (update.hasMessage()) {
+            Long chatId = update.getMessage().getChatId();
+            String userName = update.getMessage().getChat().getUserName();
+            if (update.getMessage().hasContact()) {
+                handleContact(chatId, update.getMessage().getContact());
+            } else if (update.getMessage().hasText()) {
+                handleStart(chatId, update.getMessage().getText(), userName);
             }
         }
-
     }
 
-    private void requestContact(long chatId) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+    private void handleContact(long chatId, Contact contact) {
+        String phoneNumber = contact.getPhoneNumber();
+        Optional<User> existingUser = userRepository.findByChatId(chatId);
+        existingUser.ifPresent(user -> {
+            user.setPhoneNumber(phoneNumber);
+            userRepository.save(user);
+            sendMessage(chatId, "Спасибо, ваш номер телефона сохранен.");
+        });
+    }
+
+    private void handleStart(long chatId, String text, String userName) {
+        if (text.equals("/start")) {
+            Optional<User> existingUser = userRepository.findByChatId(chatId);
+            if (!existingUser.isPresent()) {
+                requestPhoneNumber(chatId);
+            } else {
+                sendMessage(chatId, "Вы уже зарегистрированы.");
+            }
+        }
+    }
+
+    private void requestPhoneNumber(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Пожалуйста, отправьте ваш номер телефона.");
+
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
-
-        KeyboardButton contactButton = new KeyboardButton("Поделиться номером");
-        contactButton.setRequestContact(true);
-        row.add(contactButton);
+        KeyboardButton button = new KeyboardButton("Отправить мой номер телефона");
+        button.setRequestContact(true);
+        row.add(button);
         keyboard.add(row);
+        keyboardMarkup.setKeyboard(keyboard);
+        keyboardMarkup.setOneTimeKeyboard(true); // Убедитесь, что клавиатура скрывается после использования
+        keyboardMarkup.setResizeKeyboard(true); // Подгонка размера клавиатуры под количество элементов
 
-        replyKeyboardMarkup.setKeyboard(keyboard);
-        replyKeyboardMarkup.setOneTimeKeyboard(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setSelective(true);
+        message.setReplyMarkup(keyboardMarkup);
 
-        sendMessage(chatId, "Привет! Пожалуйста, поделитесь своим номером, нажав на кнопку ниже, чтобы начать работу с ботом.", replyKeyboardMarkup);
+        sendMessage(message);
+    }
+
+    private void sendMessage(SendMessage message) {
+        try {
+            absSender.execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Ошибка отправки сообщения: ", e);
+        }
+    }
+
+    private void sendMessage(long chatId, String text) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText(text);
+        sendMessage(message);
     }
 
     @Override
     public boolean canHandleUpdate(Update update) {
-        String command = update.getMessage().getText().toLowerCase();
         return update.hasMessage() && update.getMessage().hasText() &&
                 update.getMessage().getText().startsWith("/start");
-    }
-
-    private void sendMessage(Long chatId, String text, ReplyKeyboardMarkup replyMarkup) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText(text);
-        message.setReplyMarkup(replyMarkup);
-        try {
-            absSender.execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendMessage(Long chatId, String text) {
-        sendMessage(chatId, text, null);
     }
 }

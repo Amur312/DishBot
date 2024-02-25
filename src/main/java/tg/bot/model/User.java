@@ -13,8 +13,8 @@ public class User {
     @Column(name = "user_name")
     private String userName;
     @Column(name = "chat_id", nullable = false, unique = true)
-    private long chatId;
-    @Column(name = "phoneNumber")
+    private Long chatId;
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     public User(String userName, long chatId, String phoneNumber) {
