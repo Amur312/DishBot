@@ -1,12 +1,10 @@
 package tg.bot.handlers.commands;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -14,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tg.bot.handlers.Impl.UpdateHandler;
+import tg.bot.view.MainMenuService;
 import tg.bot.model.User;
 import tg.bot.model.enums.CommandBot;
 import tg.bot.repository.UserRepository;
@@ -22,17 +21,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class StartCommand implements UpdateHandler {
-    private static final Logger log = LoggerFactory.getLogger(StartCommand.class);
-
     private final UserRepository userRepository;
     private final AbsSender absSender;
-
+    private final MainMenuService mainMenuService;
     @Autowired
-    public StartCommand(UserRepository userRepository, @Lazy AbsSender absSender) {
+    public StartCommand(UserRepository userRepository, @Lazy AbsSender absSender, MainMenuService mainMenuService) {
         this.userRepository = userRepository;
         this.absSender = absSender;
+        this.mainMenuService = mainMenuService;
     }
 
     @Override
@@ -44,40 +43,26 @@ public class StartCommand implements UpdateHandler {
     public void handleUpdate(Update update) {
         if (update.hasMessage()) {
             Long chatId = update.getMessage().getChatId();
-            String userName = update.getMessage().getChat().getUserName();
-            if (update.getMessage().hasContact()) {
-                handleContact(chatId, update.getMessage().getContact());
-            } else if (update.getMessage().hasText()) {
-                handleStart(chatId, update.getMessage().getText(), userName);
-            }
+            handleStart(chatId, update.getMessage().getText());
         }
     }
 
-    private void handleContact(long chatId, Contact contact) {
-        String phoneNumber = contact.getPhoneNumber();
-        Optional<User> existingUser = userRepository.findByChatId(chatId);
-        existingUser.ifPresent(user -> {
-            user.setPhoneNumber(phoneNumber);
-            userRepository.save(user);
-            sendMessage(chatId, "Спасибо, ваш номер телефона сохранен.");
-        });
-    }
-
-    private void handleStart(long chatId, String text, String userName) {
-        if (text.equals("/start")) {
+    private void handleStart(long chatId, String text) {
+        if ("/start".equals(text)) {
             Optional<User> existingUser = userRepository.findByChatId(chatId);
             if (!existingUser.isPresent()) {
                 requestPhoneNumber(chatId);
             } else {
-                sendMessage(chatId, "Вы уже зарегистрированы.");
+                mainMenuService.sendMainMenu(chatId);
             }
         }
     }
 
+
     private void requestPhoneNumber(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText("Пожалуйста, отправьте ваш номер телефона.");
+        message.setText("Привет! Пожалуйста, поделитесь своим номером, нажав на кнопочку ниже, чтобы начать работу с ботом.");
 
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
@@ -88,8 +73,8 @@ public class StartCommand implements UpdateHandler {
         row.add(button);
         keyboard.add(row);
         keyboardMarkup.setKeyboard(keyboard);
-        keyboardMarkup.setOneTimeKeyboard(true); // Убедитесь, что клавиатура скрывается после использования
-        keyboardMarkup.setResizeKeyboard(true); // Подгонка размера клавиатуры под количество элементов
+        keyboardMarkup.setOneTimeKeyboard(true);
+        keyboardMarkup.setResizeKeyboard(true);
 
         message.setReplyMarkup(keyboardMarkup);
 
@@ -102,13 +87,6 @@ public class StartCommand implements UpdateHandler {
         } catch (TelegramApiException e) {
             log.error("Ошибка отправки сообщения: ", e);
         }
-    }
-
-    private void sendMessage(long chatId, String text) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText(text);
-        sendMessage(message);
     }
 
     @Override

@@ -11,6 +11,8 @@ import tg.bot.config.BotConfig;
 import tg.bot.handlers.CommandDispatcher;
 import tg.bot.handlers.Impl.UpdateHandler;
 import tg.bot.repository.UserRepository;
+import tg.bot.service.UserService;
+
 import java.util.List;
 
 @Component
@@ -19,10 +21,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final CommandDispatcher dispatcher;
 
-    public TelegramBot(BotConfig botConfig, UserRepository userRepository, List<UpdateHandler> handlers) {
+    public TelegramBot(BotConfig botConfig, UserRepository userRepository, UserService userService, List<UpdateHandler> handlers) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
-        this.dispatcher = new CommandDispatcher(userRepository);
+        this.dispatcher = new CommandDispatcher(userService);
         handlers.forEach(handler -> dispatcher.registerHandler(handler.getCommand(), handler));
     }
 

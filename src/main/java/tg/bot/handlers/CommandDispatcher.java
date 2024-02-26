@@ -1,5 +1,6 @@
 package tg.bot.handlers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Contact;
@@ -9,18 +10,19 @@ import tg.bot.handlers.Impl.UpdateHandler;
 import tg.bot.model.User;
 import tg.bot.model.enums.CommandBot;
 import tg.bot.repository.UserRepository;
+import tg.bot.service.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
-
+@Slf4j
 @Component
 public class CommandDispatcher {
     private final Map<CommandBot, UpdateHandler> handlers = new HashMap<>();
-    private final UserRepository userRepository;
+    private final UserService userService; // Используем UserService для управления пользователями
 
     @Autowired
-    public CommandDispatcher(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CommandDispatcher(UserService userService) {
+        this.userService = userService;
     }
 
     public void registerHandler(CommandBot command, UpdateHandler handler) {
@@ -30,17 +32,10 @@ public class CommandDispatcher {
     public void dispatch(Update update) {
         if (update.hasMessage()) {
             Message message = update.getMessage();
-            long chatId = message.getChatId();
             if (message.hasContact()) {
                 Contact contact = message.getContact();
-                System.out.println("Phone number: " + contact.getPhoneNumber());
-                if (!userRepository.existsByChatId(chatId)) {
-                    User newUser = new User();
-                    newUser.setChatId(chatId);
-                    newUser.setUserName(message.getFrom().getUserName());
-                    newUser.setPhoneNumber(contact.getPhoneNumber());
-                    userRepository.save(newUser);
-                }
+                // Вызываем метод createUserIfNotExists из UserService
+                userService.createUserIfNotExists(message.getChatId(), message.getFrom().getUserName(), contact.getPhoneNumber());
             } else if (message.hasText()) {
                 handleTextMessage(update, message);
             }
@@ -58,7 +53,7 @@ public class CommandDispatcher {
                     handler.handleUpdate(update);
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("Неизвестная команда: " + commandText);
+                log.warn("Неизвестная команда: {}", commandText);
             }
         }
     }
