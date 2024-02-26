@@ -27,7 +27,7 @@ public class MainMenuService {
     public void sendMainMenu(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText("Выберите опцию:");
+        message.setText("Выберите опцию :");
 
         ReplyKeyboardMarkup keyboardMarkup = createMainMenuKeyboard();
         message.setReplyMarkup(keyboardMarkup);
