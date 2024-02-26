@@ -40,15 +40,15 @@ public class MainMenuService {
         List<KeyboardRow> keyboard = new ArrayList<>();
 
         KeyboardRow row1 = new KeyboardRow();
-        row1.add("Каталог");
-        row1.add("Корзина");
+        row1.add("\uD83D\uDCC3 Каталог");
+        row1.add("\uD83D\uDED2 Корзина");
 
         KeyboardRow row2 = new KeyboardRow();
-        row2.add("Поиск");
-        row2.add("История Заказов");
+        row2.add("\uD83D\uDD0D Поиск");
+        row2.add("\uD83D\uDCC4 История Заказов");
 
         KeyboardRow row3 = new KeyboardRow();
-        row3.add("Контакты");
+        row3.add("\u260E Контакты");
 
         keyboard.add(row1);
         keyboard.add(row2);
@@ -57,5 +57,6 @@ public class MainMenuService {
         keyboardMarkup.setKeyboard(keyboard);
         return keyboardMarkup;
     }
+
 }
 
