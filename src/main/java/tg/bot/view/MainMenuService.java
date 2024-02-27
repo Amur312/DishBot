@@ -1,5 +1,6 @@
 package tg.bot.view;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,10 @@ import tg.bot.util.MessageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @Component
 public class MainMenuService {
     private final AbsSender absSender;
-    private Logger logger = LoggerFactory.getLogger(MainMenuService.class);
 
     @Autowired
     public MainMenuService(@Lazy AbsSender absSender) {

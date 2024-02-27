@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tg.bot.handlers.Impl.UpdateHandler;
+import tg.bot.util.MessageUtils;
 import tg.bot.view.MainMenuService;
 import tg.bot.model.User;
 import tg.bot.model.enums.CommandBot;
@@ -27,6 +28,7 @@ public class StartCommand implements UpdateHandler {
     private final UserRepository userRepository;
     private final AbsSender absSender;
     private final MainMenuService mainMenuService;
+    private MessageUtils messageUtils;
     @Autowired
     public StartCommand(UserRepository userRepository, @Lazy AbsSender absSender, MainMenuService mainMenuService) {
         this.userRepository = userRepository;
@@ -78,16 +80,10 @@ public class StartCommand implements UpdateHandler {
 
         message.setReplyMarkup(keyboardMarkup);
 
-        sendMessage(message);
+        messageUtils.sendMessage(absSender,message);
     }
 
-    private void sendMessage(SendMessage message) {
-        try {
-            absSender.execute(message);
-        } catch (TelegramApiException e) {
-            log.error("Ошибка отправки сообщения: ", e);
-        }
-    }
+
 
     @Override
     public boolean canHandleUpdate(Update update) {

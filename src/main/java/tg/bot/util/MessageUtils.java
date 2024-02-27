@@ -7,7 +7,6 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class MessageUtils {
-
     private static final Logger log = LoggerFactory.getLogger(MessageUtils.class);
 
     /**
@@ -61,4 +60,5 @@ public class MessageUtils {
             sendErrorMessage(absSender, Long.parseLong(message.getChatId()));
         }
     }
+
 }

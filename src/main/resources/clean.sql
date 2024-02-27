@@ -1,1 +1,1 @@
-DELETE FROM users WHERE id = 38;
+DELETE FROM users WHERE id = 9;
