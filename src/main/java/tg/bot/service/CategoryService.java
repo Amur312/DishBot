@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import tg.bot.model.Category;
 import tg.bot.repository.CategoryRepository;
 
-import java.util.List;
-
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
@@ -14,7 +12,14 @@ public class CategoryService {
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
-    public List<Category> findAllCategories() {
-        return categoryRepository.findAll();
+
+    public Category createCategory(String name, Category parent) {
+        Category category = new Category();
+        category.setName(name);
+        category.setParentCategory(parent);
+        return categoryRepository.save(category);
+    }
+    public Category findByName(String name) {
+        return categoryRepository.findByName(name).orElse(null);
     }
 }
