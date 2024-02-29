@@ -10,8 +10,6 @@ import tg.bot.model.Category;
 import tg.bot.model.enums.CommandBot;
 import tg.bot.service.CategoryService;
 
-import java.util.Arrays;
-
 import static tg.bot.util.MessageUtils.sendMessage;
 @Component
 public class AddCategoryChildCommandHandler implements UpdateHandler {
@@ -56,10 +54,8 @@ public class AddCategoryChildCommandHandler implements UpdateHandler {
 
     @Override
     public boolean canHandleUpdate(Update update) {
-        boolean canHandle = update.hasMessage() && update.getMessage().hasText()
+        return update.hasMessage() && update.getMessage().hasText()
                 && update.getMessage().getText().toLowerCase().startsWith("/add_child_category");
-        System.out.println("Can handle /add_child_category: " + canHandle);
-        return canHandle;
     }
 
 }

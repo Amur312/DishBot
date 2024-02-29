@@ -8,5 +8,6 @@ public enum CommandBot {
     ORDER_HISTORY,
     CONTACTS,
     ADD_CATEGORY,
-    ADD_CHILD_CATEGORY
+    ADD_CHILD_CATEGORY,
+    DELETE_CATEGORY
 }

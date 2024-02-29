@@ -36,7 +36,6 @@ public class CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException("Category not found"));
         deleteRecursively(category);
     }
-
     private void deleteRecursively(Category category) {
         List<Category> children = categoryRepository.findByParentCategory(category);
         for (Category child : children) {
