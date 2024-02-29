@@ -2,9 +2,7 @@ package tg.bot.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import javax.validation.constraints.NotNull;
-
 @Entity
 @Table(name = "categories")
 @Data

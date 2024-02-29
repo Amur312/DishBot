@@ -51,10 +51,8 @@ public class CommandDispatcher {
                     contactHandler.handle(message);
                 }
             } else if (message.hasText()) {
-                System.out.println("PIP");
                 User user = userService.findByChatId(message.getChatId()).orElse(null);
                 if (user != null) {
-                    System.out.println("User  = " + user.getState()); // Эта строка теперь внутри проверки на null
                     if (user.getState() == BotState.AWAITING_FIRST_NAME || user.getState() == BotState.AWAITING_LAST_NAME) {
                         IMessageHandler textHandler = messageHandlers.get(UserRegistrationHandler.class);
                         System.out.println("TextHandler " + textHandler);
@@ -65,7 +63,7 @@ public class CommandDispatcher {
                         handleTextMessage(update, message);
                     }
                 } else {
-                    System.out.println("User is null"); // Добавлено для отладки, если пользователь не найден
+                    System.out.println("User is null");
                     handleTextMessage(update, message);
                 }
             }

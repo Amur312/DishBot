@@ -6,5 +6,7 @@ public enum CommandBot {
     BASKET,
     SEARCH,
     ORDER_HISTORY,
-    CONTACTS
+    CONTACTS,
+    ADD_CATEGORY,
+    ADD_CHILD_CATEGORY
 }

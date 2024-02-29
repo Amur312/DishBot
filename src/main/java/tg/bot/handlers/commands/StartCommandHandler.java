@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tg.bot.handlers.Impl.UpdateHandler;
 import tg.bot.util.MessageUtils;
 import tg.bot.view.MainMenuService;
@@ -24,13 +23,13 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-public class StartCommand implements UpdateHandler {
+public class StartCommandHandler implements UpdateHandler {
     private final UserRepository userRepository;
     private final AbsSender absSender;
     private final MainMenuService mainMenuService;
     private MessageUtils messageUtils;
     @Autowired
-    public StartCommand(UserRepository userRepository, @Lazy AbsSender absSender, MainMenuService mainMenuService) {
+    public StartCommandHandler(UserRepository userRepository, @Lazy AbsSender absSender, MainMenuService mainMenuService) {
         this.userRepository = userRepository;
         this.absSender = absSender;
         this.mainMenuService = mainMenuService;
