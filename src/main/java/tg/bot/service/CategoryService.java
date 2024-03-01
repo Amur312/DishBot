@@ -23,8 +23,7 @@ public class CategoryService {
     }
 
     public Category createChildCategory(String name, Long parentId) {
-        Category parentCategory = categoryRepository.findById(parentId)
-                .orElseThrow(() -> new EntityNotFoundException("Parent category not found"));
+        Category parentCategory = categoryRepository.findById(parentId).orElseThrow(() -> new EntityNotFoundException("Parent category not found"));
         Category category = new Category();
         category.setName(name);
         category.setParentCategory(parentCategory);
@@ -32,16 +31,20 @@ public class CategoryService {
     }
 
     public void deleteCategoryAndChildren(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
         deleteRecursively(category);
     }
+
     private void deleteRecursively(Category category) {
         List<Category> children = categoryRepository.findByParentCategory(category);
         for (Category child : children) {
             deleteRecursively(child);
         }
         categoryRepository.delete(category);
+    }
+
+    public List<Category> findAllRootCategories() {
+        return categoryRepository.findByParentCategoryIsNull();
     }
     public Category findByName(String name) {
         return categoryRepository.findByName(name).orElse(null);

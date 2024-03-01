@@ -43,27 +43,20 @@ public class CommandDispatcher {
     public void dispatch(Update update) {
         if (update.hasMessage()) {
             Message message = update.getMessage();
-            System.out.println("Message " + message.getText());
+            System.out.println("Message -> " + message.getText());
             if (message.hasContact()) {
                 IMessageHandler contactHandler = messageHandlers.get(ContactMessageHandler.class);
-                System.out.println("contactHandler = " + contactHandler);
                 if (contactHandler != null) {
                     contactHandler.handle(message);
                 }
             } else if (message.hasText()) {
                 User user = userService.findByChatId(message.getChatId()).orElse(null);
-                if (user != null) {
-                    if (user.getState() == BotState.AWAITING_FIRST_NAME || user.getState() == BotState.AWAITING_LAST_NAME) {
-                        IMessageHandler textHandler = messageHandlers.get(UserRegistrationHandler.class);
-                        System.out.println("TextHandler " + textHandler);
-                        if (textHandler != null) {
-                            textHandler.handle(message);
-                        }
-                    } else {
-                        handleTextMessage(update, message);
+                if (user != null && (user.getState() == BotState.AWAITING_FIRST_NAME || user.getState() == BotState.AWAITING_LAST_NAME)) {
+                    IMessageHandler textHandler = messageHandlers.get(UserRegistrationHandler.class);
+                    if (textHandler != null) {
+                        textHandler.handle(message);
                     }
                 } else {
-                    System.out.println("User is null");
                     handleTextMessage(update, message);
                 }
             }
@@ -72,10 +65,8 @@ public class CommandDispatcher {
 
 
 
-
     private void handleTextMessage(Update update, Message message) {
         String commandText = message.getText().split(" ")[0];
-
         if (!commandText.startsWith("/")) {
             commandText = utilEmoji.convertEmojiToCommand(commandText);
         }
