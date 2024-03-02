@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -42,9 +43,16 @@ public class CatalogCommandHandler implements UpdateHandler {
         if (update.hasMessage() && update.getMessage().hasText()) {
             Long chatId = update.getMessage().getChatId();
             catalogService.sendCatalogAsButtons(chatId);
+        }else if(update.hasCallbackQuery()){
+            handleCallbackQuery(update.getCallbackQuery());
         }
     }
+    private void handleCallbackQuery(CallbackQuery callbackQuery) {
+        String callData = callbackQuery.getData();
+        long messageID = callbackQuery.getMessage().getMessageId();
+        long chatId = callbackQuery.getMessage().getChatId();
 
+    }
     @Override
     public boolean canHandleUpdate(Update update) {
         String text = update.getMessage().getText();

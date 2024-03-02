@@ -42,10 +42,13 @@ public class CategoryService {
         }
         categoryRepository.delete(category);
     }
-
+    public List<Category> findSubcategoriesByParentId(Long parentId) {
+        return categoryRepository.findByParentCategory_Id(parentId);
+    }
     public List<Category> findAllRootCategories() {
         return categoryRepository.findByParentCategoryIsNull();
     }
+
     public Category findByName(String name) {
         return categoryRepository.findByName(name).orElse(null);
     }
