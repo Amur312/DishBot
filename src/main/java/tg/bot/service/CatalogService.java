@@ -27,28 +27,49 @@ public class CatalogService {
 
     public void sendCatalogAsButtons(long chatId) {
         List<Category> categories = categoryService.findAllRootCategories();
+        String headerText = "Выберите категорию:";
+        sendCategories(chatId, categories, headerText, null);
+    }
 
+    void sendCategories(long chatId, List<Category> categories, String text, Long backToCategoryId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText("Выберите категорию:");
+        message.setText(text);
 
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 
         for (Category category : categories) {
-            InlineKeyboardButton btn = new InlineKeyboardButton();
-            btn.setText(category.getName());
-            btn.setCallbackData("CATEGORY_" + category.getId());
-
+            InlineKeyboardButton btn = createButtonForCategory(category);
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             rowInline.add(btn);
             rowsInline.add(rowInline);
         }
+
+        if (backToCategoryId != null) {
+            rowsInline.add(createBackButtonRow(backToCategoryId));
+        }
+
         markupInline.setKeyboard(rowsInline);
         message.setReplyMarkup(markupInline);
 
         sendMessage(absSender, message);
     }
 
+    private InlineKeyboardButton createButtonForCategory(Category category) {
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText(category.getName());
+        button.setCallbackData("CATEGORY_" + category.getId());
+        return button;
+    }
 
+    private List<InlineKeyboardButton> createBackButtonRow(Long categoryId) {
+        InlineKeyboardButton backButton = new InlineKeyboardButton();
+        backButton.setText("Назад");
+        backButton.setCallbackData("BACK_TO_CATEGORY_" + (categoryId == null ? "0" : categoryId));
+
+        List<InlineKeyboardButton> backRow = new ArrayList<>();
+        backRow.add(backButton);
+        return backRow;
+    }
 }

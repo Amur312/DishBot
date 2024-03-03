@@ -13,6 +13,7 @@ import tg.bot.model.User;
 import tg.bot.model.enums.BotState;
 import tg.bot.model.enums.CommandBot;
 import tg.bot.service.CallbackQueryHandler;
+import tg.bot.service.CatalogService;
 import tg.bot.service.CategoryService;
 import tg.bot.service.UserService;
 import tg.bot.util.ConvertEmojiToCommand;
@@ -30,12 +31,14 @@ public class CommandDispatcher {
     private final AbsSender absSender;
     private final Map<Class<?>, IMessageHandler> messageHandlers = new HashMap<>();
     private final CategoryService categoryService;
+    private final CatalogService catalogService;
     @Autowired
-    public CommandDispatcher(UserService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, List<IMessageHandler> messageHandlersList, CategoryService categoryService) {
+    public CommandDispatcher(UserService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, List<IMessageHandler> messageHandlersList, CategoryService categoryService, CatalogService catalogService) {
         this.userService = userService;
         this.utilEmoji = utilEmoji;
         this.absSender = absSender;
         this.categoryService = categoryService;
+        this.catalogService = catalogService;
         messageHandlersList.forEach(handler -> messageHandlers.put(handler.getClass(), handler));
     }
 
@@ -45,7 +48,7 @@ public class CommandDispatcher {
 
     public void dispatch(Update update) {
         if (update.hasCallbackQuery()) {
-            CallbackQueryHandler callbackHandler = new CallbackQueryHandler(absSender, categoryService);
+            CallbackQueryHandler callbackHandler = new CallbackQueryHandler(absSender, categoryService,catalogService);
             callbackHandler.handleCallbackQuery(update);
         }
         if (update.hasMessage()) {

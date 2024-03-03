@@ -12,6 +12,7 @@ import tg.bot.handlers.CommandDispatcher;
 import tg.bot.handlers.Impl.IMessageHandler;
 import tg.bot.handlers.Impl.UpdateHandler;
 import tg.bot.repository.UserRepository;
+import tg.bot.service.CatalogService;
 import tg.bot.service.CategoryService;
 import tg.bot.service.UserService;
 import tg.bot.util.ConvertEmojiToCommand;
@@ -26,17 +27,19 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final ConvertEmojiToCommand utilEmoji;
     private final AbsSender absSender;
     private final CategoryService categoryService;
-
+    private final CatalogService catalogService;
     @Autowired
     public TelegramBot(BotConfig botConfig, UserRepository userRepository, UserService userService,
                        List<UpdateHandler> handlers, List<IMessageHandler> messageHandlers,
-                       ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, CategoryService categoryService) {
+                       ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, CategoryService categoryService, CatalogService catalogService) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
         this.utilEmoji = utilEmoji;
         this.absSender = absSender;
         this.categoryService = categoryService;
-        this.dispatcher = new CommandDispatcher(userService, utilEmoji, absSender, messageHandlers, categoryService);
+        this.catalogService = catalogService;
+
+        this.dispatcher = new CommandDispatcher(userService, utilEmoji, absSender, messageHandlers, categoryService, catalogService);
         handlers.forEach(handler -> dispatcher.registerHandler(handler.getCommand(), handler));
     }
     @Override

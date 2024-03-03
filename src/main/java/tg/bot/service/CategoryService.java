@@ -49,6 +49,12 @@ public class CategoryService {
         return categoryRepository.findByParentCategoryIsNull();
     }
 
+    public Long findParentIdByCategoryId(Long categoryId) {
+        return categoryRepository.findById(categoryId).map(category -> {
+            return category.getParentCategory() != null ? category.getParentCategory().getId() : 0;
+        }).orElseThrow(() -> new EntityNotFoundException("Category with ID " + categoryId + " not found"));
+    }
+
     public Category findByName(String name) {
         return categoryRepository.findByName(name).orElse(null);
     }

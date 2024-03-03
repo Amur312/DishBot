@@ -19,10 +19,13 @@ import static tg.bot.util.MessageUtils.sendMessage;
 public class CallbackQueryHandler {
     private final AbsSender absSender;
     private final CategoryService categoryService;
+    private final CatalogService catalogService;
+
     @Autowired
-    public CallbackQueryHandler(@Lazy AbsSender absSender, CategoryService categoryService) {
+    public CallbackQueryHandler(@Lazy AbsSender absSender, CategoryService categoryService, CatalogService catalogService) {
         this.absSender = absSender;
         this.categoryService = categoryService;
+        this.catalogService = catalogService;
     }
 
     public void handleCallbackQuery(Update update) {
@@ -31,33 +34,18 @@ public class CallbackQueryHandler {
 
         if (data.startsWith("CATEGORY_")) {
             Long categoryId = Long.parseLong(data.split("_")[1]);
-            sendSubcategoriesAsButtons(chatId, categoryId);
+            List<Category> subcategories = categoryService.findSubcategoriesByParentId(categoryId);
+            String text = "Выберите подкатегорию:";
+            catalogService.sendCategories(chatId, subcategories, text, categoryService.findParentIdByCategoryId(categoryId));
+        } else if (data.startsWith("BACK_TO_CATEGORY_")) {
+            Long categoryId = Long.parseLong(data.split("_")[3]);
+            if (categoryId == 0) {
+                catalogService.sendCatalogAsButtons(chatId);
+            } else {
+                List<Category> subcategories = categoryService.findSubcategoriesByParentId(categoryId);
+                String text = "Выберите подкатегорию:";
+                catalogService.sendCategories(chatId, subcategories, text, categoryService.findParentIdByCategoryId(categoryId));
+            }
         }
-    }
-
-    private void sendSubcategoriesAsButtons(long chatId, Long categoryId) {
-        List<Category> subcategories = categoryService.findSubcategoriesByParentId(categoryId);
-
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText("Выберите подкатегорию:");
-
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-
-        for (Category subcategory : subcategories) {
-            InlineKeyboardButton btn = new InlineKeyboardButton();
-            btn.setText(subcategory.getName());
-            btn.setCallbackData("SUBCATEGORY_" + subcategory.getId());
-
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            rowInline.add(btn);
-            rowsInline.add(rowInline);
-        }
-
-        markupInline.setKeyboard(rowsInline);
-        message.setReplyMarkup(markupInline);
-
-        sendMessage(absSender, message);
     }
 }
