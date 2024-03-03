@@ -1,20 +1,16 @@
 package tg.bot.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import tg.bot.model.Category;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static tg.bot.util.MessageUtils.sendMessage;
-
+@Slf4j
 @Component
 public class CallbackQueryHandler {
     private final AbsSender absSender;
@@ -30,21 +26,23 @@ public class CallbackQueryHandler {
 
     public void handleCallbackQuery(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
         String data = update.getCallbackQuery().getData();
-
+        log.info("Data-> handleCallbackQuery = " + data);
         if (data.startsWith("CATEGORY_")) {
             Long categoryId = Long.parseLong(data.split("_")[1]);
+            log.info("CategoryId -> handleCallbackQuery = " + categoryId);
             List<Category> subcategories = categoryService.findSubcategoriesByParentId(categoryId);
             String text = "Выберите подкатегорию:";
-            catalogService.sendCategories(chatId, subcategories, text, categoryService.findParentIdByCategoryId(categoryId));
+            catalogService.updateMessageWithCategories(chatId, messageId, subcategories, text, categoryService.findParentIdByCategoryId(categoryId));
         } else if (data.startsWith("BACK_TO_CATEGORY_")) {
-            Long categoryId = Long.parseLong(data.split("_")[3]);
-            if (categoryId == 0) {
-                catalogService.sendCatalogAsButtons(chatId);
+            Long backToCategoryId = Long.parseLong(data.split("_")[3]);
+            if (backToCategoryId == 0) {
+                List<Category> categories = categoryService.findAllRootCategories();
+                catalogService.updateMessageWithCategories(chatId, messageId, categories, "Выберите категорию:", null);
             } else {
-                List<Category> subcategories = categoryService.findSubcategoriesByParentId(categoryId);
-                String text = "Выберите подкатегорию:";
-                catalogService.sendCategories(chatId, subcategories, text, categoryService.findParentIdByCategoryId(categoryId));
+                List<Category> subcategories = categoryService.findSubcategoriesByParentId(backToCategoryId);
+                catalogService.updateMessageWithCategories(chatId, messageId, subcategories, "Выберите подкатегорию:", categoryService.findParentIdByCategoryId(backToCategoryId));
             }
         }
     }

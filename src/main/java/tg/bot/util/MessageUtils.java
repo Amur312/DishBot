@@ -3,8 +3,14 @@ package tg.bot.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import tg.bot.handlers.Impl.UpdateHandler;
+import tg.bot.model.enums.CommandBot;
+
+import java.util.Map;
 
 public class MessageUtils {
     private static final Logger log = LoggerFactory.getLogger(MessageUtils.class);
@@ -58,6 +64,25 @@ public class MessageUtils {
         } catch (TelegramApiException e) {
             log.error("Ошибка отправки сообщения: ", e);
             sendErrorMessage(absSender, Long.parseLong(message.getChatId()));
+        }
+    }
+    public static void handleTextMessage(Update update, Message message, Map<CommandBot, UpdateHandler> handlers, ConvertEmojiToCommand utilEmoji) {
+        String commandText = message.getText().split(" ")[0];
+
+        if (!commandText.startsWith("/")) {
+            commandText = utilEmoji.convertEmojiToCommand(commandText);
+        }
+        if (commandText.startsWith("/")) {
+            commandText = commandText.substring(1).toUpperCase();
+            try {
+                CommandBot command = CommandBot.valueOf(commandText);
+                UpdateHandler handler = handlers.get(command);
+                if (handler != null && handler.canHandleUpdate(update)) {
+                    handler.handleUpdate(update);
+                }
+            } catch (IllegalArgumentException e) {
+                log.warn("Неизвестная команда: {}", commandText);
+            }
         }
     }
 

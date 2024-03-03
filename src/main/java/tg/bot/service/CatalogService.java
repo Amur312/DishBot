@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tg.bot.model.Category;
 
 import java.util.ArrayList;
@@ -54,6 +56,35 @@ public class CatalogService {
         message.setReplyMarkup(markupInline);
 
         sendMessage(absSender, message);
+    }
+    public void updateMessageWithCategories(long chatId, int messageId, List<Category> categories, String text, Long backToCategoryId) {
+        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+
+        for (Category category : categories) {
+            InlineKeyboardButton btn = createButtonForCategory(category);
+            List<InlineKeyboardButton> rowInline = new ArrayList<>();
+            rowInline.add(btn);
+            rowsInline.add(rowInline);
+        }
+
+        if (backToCategoryId != null) {
+            rowsInline.add(createBackButtonRow(backToCategoryId));
+        }
+
+        markupInline.setKeyboard(rowsInline);
+
+        EditMessageText editMessageText = new EditMessageText();
+        editMessageText.setChatId(String.valueOf(chatId));
+        editMessageText.setMessageId(messageId);
+        editMessageText.setText(text);
+        editMessageText.setReplyMarkup(markupInline);
+
+        try {
+            absSender.execute(editMessageText);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     private InlineKeyboardButton createButtonForCategory(Category category) {

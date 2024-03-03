@@ -9,5 +9,6 @@ public enum CommandBot {
     CONTACTS,
     ADD_CATEGORY,
     ADD_CHILD_CATEGORY,
-    DELETE_CATEGORY
+    DELETE_CATEGORY,
+    ADD_PRODUCT
 }

@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static tg.bot.util.MessageUtils.handleTextMessage;
+
 @Slf4j
 @Component
 public class CommandDispatcher {
@@ -67,33 +69,10 @@ public class CommandDispatcher {
                         textHandler.handle(message);
                     }
                 } else {
-                    handleTextMessage(update, message);
+                    handleTextMessage(update, message, handlers, utilEmoji);
                 }
             }
         }
     }
-
-
-
-    private void handleTextMessage(Update update, Message message) {
-        String commandText = message.getText().split(" ")[0];
-
-        if (!commandText.startsWith("/")) {
-            commandText = utilEmoji.convertEmojiToCommand(commandText);
-        }
-        if (commandText.startsWith("/")) {
-            commandText = commandText.substring(1).toUpperCase();
-            try {
-                CommandBot command = CommandBot.valueOf(commandText);
-                UpdateHandler handler = handlers.get(command);
-                if (handler != null && handler.canHandleUpdate(update)) {
-                    handler.handleUpdate(update);
-                }
-            } catch (IllegalArgumentException e) {
-                log.warn("Неизвестная команда: {}", commandText);
-            }
-        }
-    }
-
 }
 

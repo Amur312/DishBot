@@ -18,6 +18,9 @@ public class Product {
     private String description;
     @Column(name = "price", nullable = false)
     private BigDecimal price;
+    @Lob
+    @Column(name = "image")
+    private byte[] image;
 
     public Product() {
     }

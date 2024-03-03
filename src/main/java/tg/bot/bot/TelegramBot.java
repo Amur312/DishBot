@@ -38,7 +38,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.absSender = absSender;
         this.categoryService = categoryService;
         this.catalogService = catalogService;
-
         this.dispatcher = new CommandDispatcher(userService, utilEmoji, absSender, messageHandlers, categoryService, catalogService);
         handlers.forEach(handler -> dispatcher.registerHandler(handler.getCommand(), handler));
     }
