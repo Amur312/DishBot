@@ -1,5 +1,4 @@
 <#include "security.ftlh">
-
 <nav class="navbar navbar-default">
   <div class="container-fluid">
 
@@ -19,10 +18,9 @@
         <li><a href="orders"><i class="fa fa-cart-arrow-down mr-1"></i>Orders</a></li>
         <li><a href="broadcasts/add"><i class="fa fa-comment mr-1"></i>Broadcasts</a></li>
 
-        <#if user?? && user.hasAnyAuthority('ADMIN')>
-          <li><a href="messages"><i class="fa fa-envelope mr-1"></i>Messages</a></li>
-          <li><a href="users"><i class="fa fa-user-secret mr-1"></i>Users</a></li>
-        </#if>
+        <!-- Admin-specific items -->
+        <li><a href="messages"><i class="fa fa-envelope mr-1"></i>Messages</a></li>
+        <li><a href="users"><i class="fa fa-user-secret mr-1"></i>Users</a></li>
       </ul>
 
       <div class="navbar-text pull-right">
@@ -33,7 +31,7 @@
       </div>
 
       <div class="navbar-text pull-right">
-        <i><#if user??>${user.username}</#if></i>
+        <i>${user.username}</i>
       </div>
     </div>
 
