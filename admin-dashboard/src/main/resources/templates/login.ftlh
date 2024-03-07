@@ -1,6 +1,6 @@
 <#import "common/home.ftlh" as h>
 
-<@h.home "Authorization">
+<@h.home "Login">
 
   <#if RequestParameters.error?? >
     <div class="alert alert-warning" role="alert">

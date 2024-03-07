@@ -1,5 +1,6 @@
 package сom.site.admin.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,9 @@ import jakarta.validation.Valid;
 import сom.site.admin.models.entities.Category;
 import сom.site.admin.services.CategoryService;
 import сom.site.admin.utils.ControllerUtils;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/categories")
@@ -33,27 +37,41 @@ public class CategoryController {
     }
 
     @GetMapping("/add")
-    public String showAddCategory() {
+    public String showAddCategory(Model model) {
+        List<Category> parentCategories = categoryService.findAllRootCategories();
+        model.addAttribute("parentCategories", parentCategories);
         return "main/categories/add";
     }
 
-    @GetMapping("/edit/{category}")
-    public String showEditCategory(Model model, @PathVariable Category category) {
+    @GetMapping("/edit/{id}")
+    public String showEditCategory(@PathVariable Long id, Model model) {
+        Category category = categoryService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category Id:" + id));
         model.addAttribute("category", category);
+        model.addAttribute("parentCategories", categoryService.findAllRootCategories());
         return "main/categories/edit";
     }
 
     @PostMapping("/create")
-    public String createCategory(@Valid Category category, BindingResult bindingResult, Model model) {
+    public String createCategory(@RequestParam("parent_id") Optional<Long> parentId, @Valid Category category, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.mergeAttributes(ControllerUtils.findErrors(bindingResult));
             model.addAttribute("category", category);
+            List<Category> parentCategories = categoryService.findAllRootCategories();
+            model.addAttribute("parentCategories", parentCategories);
             return "main/categories/add";
         }
+
+        parentId.ifPresent(aLong -> {
+            Category parent = categoryService.findById(aLong)
+                    .orElseThrow(() -> new EntityNotFoundException("Parent category not found"));
+            category.setParentCategory(parent);
+        });
 
         categoryService.save(category);
         return "redirect:/categories";
     }
+
 
     @PostMapping("/update")
     public String updateCategory(@Valid Category category, BindingResult bindingResult, Model model) {
@@ -64,13 +82,12 @@ public class CategoryController {
         }
 
         categoryService.update(category);
-        return "redirect:/categories/edit/" + category.getId();
-    }
-
-    @PostMapping("/delete")
-    public String deleteCategory(@RequestParam Integer id) {
-        categoryService.deleteById(id);
         return "redirect:/categories";
     }
 
+    @PostMapping("/delete")
+    public String deleteCategory(@RequestParam Long id) {
+        categoryService.deleteCategoryAndChildren(id);
+        return "redirect:/categories";
+    }
 }

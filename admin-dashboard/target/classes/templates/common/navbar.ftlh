@@ -1,7 +1,6 @@
 <#include "security.ftlh">
 <nav class="navbar navbar-default">
   <div class="container-fluid">
-
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed"
               data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -9,7 +8,6 @@
       </button>
       <a class="navbar-brand" href="#">Admin panel</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li><a href="clients"><i class="fa fa-users mr-1"></i>Clients</a></li>
@@ -17,10 +15,7 @@
         <li><a href="products"><i class="fa fa-archive mr-1"></i>Products</a></li>
         <li><a href="orders"><i class="fa fa-cart-arrow-down mr-1"></i>Orders</a></li>
         <li><a href="broadcasts/add"><i class="fa fa-comment mr-1"></i>Broadcasts</a></li>
-
-        <!-- Admin-specific items -->
         <li><a href="messages"><i class="fa fa-envelope mr-1"></i>Messages</a></li>
-        <li><a href="users"><i class="fa fa-user-secret mr-1"></i>Users</a></li>
       </ul>
 
       <div class="navbar-text pull-right">

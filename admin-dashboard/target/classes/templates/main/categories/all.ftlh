@@ -1,33 +1,44 @@
 <#import "../../common/home.ftlh" as h>
-<#import "../../common/table.ftlh" as t>
 
-<@h.home "Category list">
+<@h.home "Список категорий">
 
   <center class="mb-4">
-    <a class="btn btn-sm btn-info" href="categories/add">Add category</a>
+    <a class="btn btn-sm btn-info" href="categories/add">Добавить категорию</a>
   </center>
 
-  <@t.table "categories" />
-  <table id="categories" class="table table-striped table-bordered" cellspacing="0" width="100%">
-    <thead>
+  <#macro displayCategories categories>
+    <#list categories as category>
       <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Action</th>
+        <td>${category.id?c}</td>
+        <td><#if category.parentId??>(Подкатегория) </#if>${category.name!}</td>
+        <td>
+          <a class="btn btn-xs btn-info" href="categories/edit/${category.id?c}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+        </td>
       </tr>
-    </thead>
-    <tbody>
-      <#list categories as category>
+      <#if category.subCategories?? && category.subCategories?size > 0>
         <tr>
-          <td>${category.id?c}</td>
-          <td>${category.name!}</td>
-          <td>
-            <a class="btn btn-xs btn-info" href="categories/edit/${category.id?c}">
-              <i class="fa fa-pencil" aria-hidden="true"></i>
-            </a>
+          <td colspan="3">
+            <table class="table">
+              <@displayCategories category.subCategories/>
+            </table>
           </td>
         </tr>
-      </#list>
+      </#if>
+    </#list>
+  </#macro>
+
+  <table id="categories" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Название</th>
+      <th>Действие</th>
+    </tr>
+    </thead>
+    <tbody>
+    <@displayCategories categories/>
     </tbody>
   </table>
 
