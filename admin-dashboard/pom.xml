@@ -113,6 +113,12 @@
             <artifactId>spring-security-config</artifactId>
             <version>6.2.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.ngrok/ngrok-java -->
+        <dependency>
+            <groupId>com.ngrok</groupId>
+            <artifactId>ngrok-java</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
 
     </dependencies>

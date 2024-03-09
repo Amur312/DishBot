@@ -94,6 +94,7 @@ public class CatalogService {
         return button;
     }
 
+
     private List<InlineKeyboardButton> createBackButtonRow(Long categoryId) {
         InlineKeyboardButton backButton = new InlineKeyboardButton();
         backButton.setText("Назад");

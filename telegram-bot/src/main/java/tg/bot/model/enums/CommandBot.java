@@ -7,8 +7,5 @@ public enum CommandBot {
     SEARCH,
     ORDER_HISTORY,
     CONTACTS,
-    ADD_CATEGORY,
-    ADD_CHILD_CATEGORY,
-    DELETE_CATEGORY,
-    ADD_PRODUCT
+    PRODUCTS
 }

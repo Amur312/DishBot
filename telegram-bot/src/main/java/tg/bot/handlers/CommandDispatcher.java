@@ -12,10 +12,7 @@ import tg.bot.handlers.Impl.UpdateHandler;
 import tg.bot.model.User;
 import tg.bot.model.enums.BotState;
 import tg.bot.model.enums.CommandBot;
-import tg.bot.service.CallbackQueryHandler;
-import tg.bot.service.CatalogService;
-import tg.bot.service.CategoryService;
-import tg.bot.service.UserService;
+import tg.bot.service.*;
 import tg.bot.util.ConvertEmojiToCommand;
 
 import java.util.HashMap;
@@ -34,13 +31,15 @@ public class CommandDispatcher {
     private final Map<Class<?>, IMessageHandler> messageHandlers = new HashMap<>();
     private final CategoryService categoryService;
     private final CatalogService catalogService;
+    private final ProductService productService;
     @Autowired
-    public CommandDispatcher(UserService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, List<IMessageHandler> messageHandlersList, CategoryService categoryService, CatalogService catalogService) {
+    public CommandDispatcher(UserService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, List<IMessageHandler> messageHandlersList, CategoryService categoryService, CatalogService catalogService, ProductService productService) {
         this.userService = userService;
         this.utilEmoji = utilEmoji;
         this.absSender = absSender;
         this.categoryService = categoryService;
         this.catalogService = catalogService;
+        this.productService = productService;
         messageHandlersList.forEach(handler -> messageHandlers.put(handler.getClass(), handler));
     }
 
@@ -50,7 +49,7 @@ public class CommandDispatcher {
 
     public void dispatch(Update update) {
         if (update.hasCallbackQuery()) {
-            CallbackQueryHandler callbackHandler = new CallbackQueryHandler(absSender, categoryService,catalogService);
+            CallbackQueryHandler callbackHandler = new CallbackQueryHandler(absSender, categoryService,catalogService, productService);
             callbackHandler.handleCallbackQuery(update);
         }
         if (update.hasMessage()) {

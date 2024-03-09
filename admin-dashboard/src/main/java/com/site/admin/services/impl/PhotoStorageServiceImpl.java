@@ -1,17 +1,24 @@
 package com.site.admin.services.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
-
 import com.site.admin.exceptions.SaveFileException;
 import com.site.admin.services.PhotoStorageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 @Service
+@Slf4j
 public class PhotoStorageServiceImpl implements PhotoStorageService {
+    private static final String IMAGE_FOLDER = "/images/";
+    private static final String FILE_EXTENSION = ".jpg";
+    private static final long MAX_SIZE = 5 * 1024 * 1024;
 
     @Value("${admin.images-upload-path}")
     private String imagesUploadPath;
@@ -21,20 +28,30 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
     @Override
     public String store(MultipartFile photo) {
-        if (photo == null) {
-            throw new IllegalArgumentException("Photo should not be NULL");
+        if (photo == null || photo.isEmpty()) {
+            throw new IllegalArgumentException("Photo should not be null or empty");
         }
 
-        String fileName = UUID.randomUUID() + ".jpg";
-        String filePath = imagesUploadPath + "/" + fileName;
+        if (photo.getSize() > MAX_SIZE) {
+            throw new IllegalArgumentException("File size exceeds the allowable limit");
+        }
+
+        if (!photo.getContentType().startsWith("image/")) {
+            throw new IllegalArgumentException("Invalid file type");
+        }
+
+        String fileName = UUID.randomUUID() + FILE_EXTENSION;
+        Path filePath = Paths.get(imagesUploadPath + IMAGE_FOLDER + fileName);
 
         try {
-            photo.transferTo(new File(filePath));
+            Files.createDirectories(filePath.getParent());
+            photo.transferTo(filePath.toFile());
         } catch (IOException e) {
-            throw new SaveFileException("Failed save photo", e);
+            log.error("Failed to save photo", e);
+            throw new SaveFileException("Failed to save photo", e);
         }
 
-        return serverUrl + "/images/" + fileName;
+        return serverUrl + IMAGE_FOLDER + fileName;
     }
 
 }
