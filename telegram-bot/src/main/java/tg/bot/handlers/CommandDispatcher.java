@@ -33,7 +33,9 @@ public class CommandDispatcher {
     private final CatalogService catalogService;
     private final ProductService productService;
     @Autowired
-    public CommandDispatcher(UserService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, List<IMessageHandler> messageHandlersList, CategoryService categoryService, CatalogService catalogService, ProductService productService) {
+    public CommandDispatcher(UserService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender,
+                             List<IMessageHandler> messageHandlersList, CategoryService categoryService,
+                             CatalogService catalogService, ProductService productService) {
         this.userService = userService;
         this.utilEmoji = utilEmoji;
         this.absSender = absSender;

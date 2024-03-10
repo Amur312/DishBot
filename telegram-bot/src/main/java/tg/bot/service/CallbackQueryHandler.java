@@ -18,8 +18,10 @@ public class CallbackQueryHandler {
     private final CategoryService categoryService;
     private final CatalogService catalogService;
     private final ProductService productService;
+    private final int PRODUCTS_PER_PAGE = 10;
     @Autowired
-    public CallbackQueryHandler(@Lazy AbsSender absSender, CategoryService categoryService, CatalogService catalogService, @Lazy  ProductService productService) {
+    public CallbackQueryHandler(@Lazy AbsSender absSender, CategoryService categoryService,
+                                CatalogService catalogService, ProductService productService) {
         this.absSender = absSender;
         this.categoryService = categoryService;
         this.catalogService = catalogService;
@@ -29,31 +31,30 @@ public class CallbackQueryHandler {
     public void handleCallbackQuery(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         String data = update.getCallbackQuery().getData();
+        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
 
         if (data.startsWith("CATEGORY_")) {
             Long categoryId = Long.parseLong(data.split("_")[1]);
             List<Category> subcategories = categoryService.findSubcategoriesByParentId(categoryId);
             if (subcategories.isEmpty()) {
                 List<Product> products = productService.findProductsByCategoryId(categoryId);
-                productService.sendProductsAsButtons(chatId, products);
+                productService.sendProductsAsButtons(chatId, products, 0, categoryId);
             } else {
                 String text = "Выберите подкатегорию:";
-                Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
                 Long parentId = categoryService.findParentIdByCategoryId(categoryId);
                 catalogService.updateMessageWithCategories(chatId, messageId, subcategories, text, parentId);
             }
         } else if (data.startsWith("PRODUCT_")) {
+
             Long productId = Long.parseLong(data.split("_")[1]);
             Product product = productService.findProductById(productId);
             if (product != null) {
                 productService.sendProductDetails(chatId, product);
             } else {
                 log.error("Product with id " + productId + " not found.");
-                // Отправляем сообщение об ошибке, если продукт не найден
             }
         } else if (data.startsWith("BACK_TO_CATEGORY_")) {
             Long backToCategoryId = Long.parseLong(data.split("_")[3]);
-            Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
             if (backToCategoryId == 0) {
                 List<Category> categories = categoryService.findAllRootCategories();
                 catalogService.updateMessageWithCategories(chatId, messageId, categories, "Выберите категорию:", null);
@@ -61,6 +62,19 @@ public class CallbackQueryHandler {
                 List<Category> subcategories = categoryService.findSubcategoriesByParentId(backToCategoryId);
                 Long parentId = categoryService.findParentIdByCategoryId(backToCategoryId);
                 catalogService.updateMessageWithCategories(chatId, messageId, subcategories, "Выберите подкатегорию:", parentId);
+            }
+        } else if (data.startsWith("PAGE_")) {
+            String[] parts = data.split("_");
+            int currentPage = Integer.parseInt(parts[1]);
+            Long categoryId = Long.parseLong(parts[2]);
+            List<Product> products = productService.findProductsByCategoryId(categoryId);
+            int totalPageCount = (int) Math.ceil((double) products.size() / PRODUCTS_PER_PAGE);
+            if (currentPage >= 0 && currentPage < totalPageCount) {
+                productService.sendProductsAsButtons(chatId, products.subList(currentPage *
+                        PRODUCTS_PER_PAGE, Math.min((currentPage + 1) * PRODUCTS_PER_PAGE,
+                        products.size())), currentPage, categoryId);
+            } else {
+                log.error("Requested page " + currentPage + " is out of bounds.");
             }
         }
     }

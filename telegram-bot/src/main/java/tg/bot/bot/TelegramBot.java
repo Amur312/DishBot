@@ -34,7 +34,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot(BotConfig botConfig, UserRepository userRepository, UserService userService,
                        List<UpdateHandler> handlers, List<IMessageHandler> messageHandlers,
                        ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, CategoryService categoryService,
-                       CatalogService catalogService, @Lazy ProductService productService) {
+                       CatalogService catalogService, ProductService productService) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
         this.utilEmoji = utilEmoji;
