@@ -10,6 +10,7 @@ import tg.bot.model.Category;
 import tg.bot.model.Product;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -19,6 +20,7 @@ public class CallbackQueryHandler {
     private final CatalogService catalogService;
     private final ProductService productService;
     private final int PRODUCTS_PER_PAGE = 10;
+    AtomicInteger currentPage = new AtomicInteger();
     @Autowired
     public CallbackQueryHandler(@Lazy AbsSender absSender, CategoryService categoryService,
                                 CatalogService catalogService, ProductService productService) {
@@ -32,13 +34,13 @@ public class CallbackQueryHandler {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         String data = update.getCallbackQuery().getData();
         Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
-
         if (data.startsWith("CATEGORY_")) {
             Long categoryId = Long.parseLong(data.split("_")[1]);
             List<Category> subcategories = categoryService.findSubcategoriesByParentId(categoryId);
             if (subcategories.isEmpty()) {
                 List<Product> products = productService.findProductsByCategoryId(categoryId);
-                productService.sendProductsAsButtons(chatId, products, 0, categoryId);
+                productService.sendProductsAsButtons(chatId, products, 0, categoryId, messageId);
+
             } else {
                 String text = "Выберите подкатегорию:";
                 Long parentId = categoryService.findParentIdByCategoryId(categoryId);
@@ -51,7 +53,7 @@ public class CallbackQueryHandler {
             if (product != null) {
                 productService.sendProductDetails(chatId, product);
             } else {
-                log.error("Product with id " + productId + " not found.");
+                System.out.println("Product with id " + productId + " not found.");
             }
         } else if (data.startsWith("BACK_TO_CATEGORY_")) {
             Long backToCategoryId = Long.parseLong(data.split("_")[3]);
@@ -65,14 +67,14 @@ public class CallbackQueryHandler {
             }
         } else if (data.startsWith("PAGE_")) {
             String[] parts = data.split("_");
-            int currentPage = Integer.parseInt(parts[1]);
+            currentPage.set(Integer.parseInt(parts[1]));
             Long categoryId = Long.parseLong(parts[2]);
             List<Product> products = productService.findProductsByCategoryId(categoryId);
             int totalPageCount = (int) Math.ceil((double) products.size() / PRODUCTS_PER_PAGE);
-            if (currentPage >= 0 && currentPage < totalPageCount) {
-                productService.sendProductsAsButtons(chatId, products.subList(currentPage *
-                        PRODUCTS_PER_PAGE, Math.min((currentPage + 1) * PRODUCTS_PER_PAGE,
-                        products.size())), currentPage, categoryId);
+            if (currentPage.get() >= 0 && currentPage.get() < totalPageCount){
+                int updatedPage = productService.sendProductsAsButtons(chatId, products, currentPage.get(), categoryId, messageId);
+                System.out.println("updatedPage -------> " + updatedPage);
+                currentPage.set(updatedPage);
             } else {
                 log.error("Requested page " + currentPage + " is out of bounds.");
             }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -17,6 +18,7 @@ import tg.bot.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 @Service
 @Slf4j
@@ -24,7 +26,6 @@ public class ProductService {
     private static final int PRODUCTS_PER_PAGE = 10;
     private final ProductRepository productRepository;
     private final AbsSender absSender;
-
     public ProductService(ProductRepository productRepository, @Lazy AbsSender absSender) {
         this.productRepository = productRepository;
         this.absSender = absSender;
@@ -40,11 +41,7 @@ public class ProductService {
     }
 
 
-    public void sendProductsAsButtons(Long chatId, List<Product> products, int currentPage, Long categoryId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId.toString());
-        message.setText("Выберите товар:");
-
+    public int sendProductsAsButtons(Long chatId, List<Product> products, int currentPage, Long categoryId, Integer messageId) {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 
@@ -63,44 +60,61 @@ public class ProductService {
             rowInline.add(button);
             rowsInline.add(rowInline);
         }
-
         rowsInline.add(getPaginationRow(chatId, currentPage, totalPages, categoryId));
-
         markupInline.setKeyboard(rowsInline);
-        message.setReplyMarkup(markupInline);
 
-        try {
-            absSender.execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        if (messageId == null) {
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId.toString());
+            message.setText("Выберите товар:");
+            message.setReplyMarkup(markupInline);
+            try {
+                absSender.execute(message);
+            } catch (TelegramApiException e) {
+                log.error("Error sending message", e);
+            }
+        } else {
+            EditMessageText editMessageText = new EditMessageText();
+            editMessageText.setChatId(chatId.toString());
+            editMessageText.setMessageId(messageId);
+            editMessageText.setText("Выберите товар:");
+            editMessageText.setReplyMarkup(markupInline);
+
+            try {
+                absSender.execute(editMessageText);
+            } catch (TelegramApiException e) {
+                log.error("Error updating message", e);
+            }
         }
+        return currentPage;
     }
+
 
     private List<InlineKeyboardButton> getPaginationRow(Long chatId, int currentPage, int totalPages, Long categoryId) {
         List<InlineKeyboardButton> paginationRow = new ArrayList<>();
-        System.out.println("currentPage -------------------->" + currentPage);
+
+
+        BiConsumer<String, String> addButton = (text, callbackData) -> {
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(text);
+            button.setCallbackData(callbackData);
+            paginationRow.add(button);
+        };
 
         if (currentPage > 0) {
-            InlineKeyboardButton backButton = new InlineKeyboardButton();
-            backButton.setText("⬅️ Назад");
-            backButton.setCallbackData("PAGE_" + (currentPage - 1) + "_" + categoryId);
-            paginationRow.add(backButton);
+            addButton.accept("⬅️ Назад", "PAGE_" + (currentPage - 1) + "_" + categoryId);
         }
-
         if (currentPage < totalPages - 1) {
-            InlineKeyboardButton nextButton = new InlineKeyboardButton();
-            nextButton.setText("Вперёд ➡️");
-            nextButton.setCallbackData("PAGE_" + (currentPage + 1) + "_" + categoryId);
-            paginationRow.add(nextButton);
+            addButton.accept("Вперёд ➡️", "PAGE_" + (currentPage + 1) + "_" + categoryId);
         }
         if (currentPage == 0) {
-            InlineKeyboardButton backToCategoriesButton = new InlineKeyboardButton();
-            backToCategoriesButton.setText("Назад к категориям");
-            backToCategoriesButton.setCallbackData("BACK_TO_CATEGORIES");
-            paginationRow.add(backToCategoriesButton);
+            addButton.accept("Назад к категориям", "BACK_TO_CATEGORY_" + categoryId);
         }
+
         return paginationRow;
     }
+
+
 
 
     public void sendProductDetails(Long chatId, Product product) {
