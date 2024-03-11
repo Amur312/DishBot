@@ -55,14 +55,13 @@ public class ProductService {
             Product product = products.get(i);
             InlineKeyboardButton button = new InlineKeyboardButton();
             button.setText(product.getName() + " - " + product.getPrice().toString() + " UZS");
-            button.setCallbackData("PRODUCT_" + product.getId().toString());
+            button.setCallbackData("PRODUCT_" + product.getId().toString() + "_" + currentPage + "_" + categoryId);
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             rowInline.add(button);
             rowsInline.add(rowInline);
         }
         rowsInline.add(getPaginationRow(chatId, currentPage, totalPages, categoryId));
         markupInline.setKeyboard(rowsInline);
-
         if (messageId == null) {
             SendMessage message = new SendMessage();
             message.setChatId(chatId.toString());
@@ -115,14 +114,33 @@ public class ProductService {
     }
 
 
+    public void sendProductDetails(Long chatId, Product product, int currentPage, Long currentCategoryId) {
 
+        String messageText = product.getName() + "\nЦена: " + product.getPrice() + " UZS\n" + product.getDescription();
+        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 
-    public void sendProductDetails(Long chatId, Product product) {
+        InlineKeyboardButton addToCartButton = new InlineKeyboardButton();
+        addToCartButton.setText("Добавить в корзину");
+        addToCartButton.setCallbackData("ADD_TO_CART_" + product.getId());
+        List<InlineKeyboardButton> cartRow = new ArrayList<>();
+        cartRow.add(addToCartButton);
+        rowsInline.add(cartRow);
+
+        InlineKeyboardButton backButton = new InlineKeyboardButton();
+        backButton.setText("Назад в списку");
+        backButton.setCallbackData("BACK_TO_PAGE_" + currentPage + "_" + currentCategoryId);
+        List<InlineKeyboardButton> backRow = new ArrayList<>();
+        backRow.add(backButton);
+        rowsInline.add(backRow);
+
+        markupInline.setKeyboard(rowsInline);
 
         SendMessage message = new SendMessage();
         message.setChatId(chatId.toString());
-        message.setText(product.getDescription());
-        System.out.println("PHOTO ----------------------> " + product.getPhotoUrl());
+        message.setText(messageText);
+        message.setReplyMarkup(markupInline);
+
         if (product.getPhotoUrl() != null && !product.getPhotoUrl().isEmpty()) {
             sendProductPhoto(chatId, product);
         }
@@ -130,7 +148,7 @@ public class ProductService {
         try {
             absSender.execute(message);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.error("Error sending product details", e);
         }
     }
 
