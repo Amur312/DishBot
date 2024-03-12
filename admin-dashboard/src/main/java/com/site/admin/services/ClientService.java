@@ -6,12 +6,12 @@ import com.site.admin.models.entities.Client;
 
 public interface ClientService {
 
-    Client findById(Integer id);
+    Client findById(Long id);
 
     List<Client> findAll();
 
     Client update(Client client);
 
-    List<Client> findAllByActive(boolean active);
+
 
 }

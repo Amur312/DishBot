@@ -11,18 +11,15 @@ import tg.bot.config.BotConfig;
 import tg.bot.handlers.CommandDispatcher;
 import tg.bot.handlers.Impl.IMessageHandler;
 import tg.bot.handlers.Impl.UpdateHandler;
-import tg.bot.repository.UserRepository;
-import tg.bot.service.CatalogService;
-import tg.bot.service.CategoryService;
-import tg.bot.service.ProductService;
-import tg.bot.service.UserService;
+import tg.bot.repository.ClientRepository;
+import tg.bot.service.*;
 import tg.bot.util.ConvertEmojiToCommand;
 
 import java.util.List;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
-    private final UserRepository userRepository;
+    private final ClientRepository userRepository;
     private final BotConfig botConfig;
     private final CommandDispatcher dispatcher;
     private final ConvertEmojiToCommand utilEmoji;
@@ -30,11 +27,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final CategoryService categoryService;
     private final CatalogService catalogService;
     private final ProductService productService;
+    private final OrderService orderService;
     @Autowired
-    public TelegramBot(BotConfig botConfig, UserRepository userRepository, UserService userService,
+    public TelegramBot(BotConfig botConfig, ClientRepository userRepository, ClientService userService,
                        List<UpdateHandler> handlers, List<IMessageHandler> messageHandlers,
                        ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender, CategoryService categoryService,
-                       CatalogService catalogService, ProductService productService) {
+                       CatalogService catalogService, ProductService productService, OrderService orderService) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
         this.utilEmoji = utilEmoji;
@@ -42,7 +40,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.categoryService = categoryService;
         this.catalogService = catalogService;
         this.productService = productService;
-        this.dispatcher = new CommandDispatcher(userService, utilEmoji, absSender, messageHandlers, categoryService, catalogService, productService);
+        this.orderService = orderService;
+        this.dispatcher = new CommandDispatcher(userService, utilEmoji, absSender, messageHandlers,
+                categoryService, catalogService, productService, orderService);
         handlers.forEach(handler -> dispatcher.registerHandler(handler.getCommand(), handler));
     }
     @Override

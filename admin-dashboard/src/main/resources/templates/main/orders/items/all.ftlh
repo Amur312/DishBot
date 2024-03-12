@@ -19,12 +19,10 @@
             <#if item.product??>
                 <input type="hidden" name="items[${item?index}].product" value="${item.product.id?c}">
             </#if>
-            <input type="hidden" name="items[${item?index}].quantity" value="${item.quantity?c}">
             <input type="hidden" name="items[${item?index}].productName" value="${item.productName}">
             <input type="hidden" name="items[${item?index}].productPrice" value="${item.productPrice?c}">
             <tr>
                 <td>${item.productName}</td>
-                <td>${item.quantity?c} pcs.</td>
                 <td>${item.productPrice} $</td>
                 <td>${item.totalPrice} $</td>
             </tr>

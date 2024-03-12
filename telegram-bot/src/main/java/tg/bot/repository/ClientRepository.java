@@ -6,19 +6,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 import org.springframework.stereotype.Repository;
-import tg.bot.model.User;
+import tg.bot.model.Client;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @ComponentScan("tg.bot.repository")
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByChatId(Long chatId);
+public interface ClientRepository extends JpaRepository<Client, Long> {
+    Optional<Client> findByChatId(Long chatId);
 
-    List<User> findAll();
+    List<Client> findAll();
 
-    User save(User user);
+    Client save(Client user);
 
     boolean existsByChatId(Long chatId);
     boolean existsByPhoneNumber(String phoneNumber);

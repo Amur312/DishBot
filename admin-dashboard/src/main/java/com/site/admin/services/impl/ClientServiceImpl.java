@@ -21,7 +21,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client findById(Integer id) {
+    public Client findById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("Id of Client should not be NULL");
         }
@@ -49,9 +49,6 @@ public class ClientServiceImpl implements ClientService {
         return repository.save(client);
     }
 
-    @Override
-    public List<Client> findAllByActive(boolean active) {
-        return repository.findAllByActive(active);
-    }
+
 
 }

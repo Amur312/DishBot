@@ -5,11 +5,11 @@ import lombok.Data;
 import tg.bot.model.enums.BotState;
 
 @Entity
-@Table(name = "users")
+@Table(name = "clients")
 @Data
-public class User {
+public class Client {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "last_name")
@@ -30,11 +30,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private BotState state = BotState.NONE;
-
-    public User() {
+    @Column(name = "address_client")
+    private String address;
+    public Client() {
     }
 
-    public User(String lastName, String firstName, long chatId, String phoneNumber) {
+    public Client(String lastName, String firstName, long chatId, String phoneNumber) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.chatId = chatId;
@@ -42,7 +43,7 @@ public class User {
         this.state = BotState.NONE;
     }
 
-    public User(long chatId, String tgName, String phoneNumber) {
+    public Client(long chatId, String tgName, String phoneNumber) {
         this.chatId = chatId;
         this.tgName = tgName;
         this.phoneNumber = phoneNumber;

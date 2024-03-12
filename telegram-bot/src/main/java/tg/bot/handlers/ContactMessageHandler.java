@@ -7,17 +7,17 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import tg.bot.handlers.Impl.IMessageHandler;
 import tg.bot.model.enums.BotState;
-import tg.bot.service.UserService;
+import tg.bot.service.ClientService;
 
 import static tg.bot.util.MessageUtils.sendMessage;
 
 @Component
 public class ContactMessageHandler implements IMessageHandler {
-    private final UserService userService;
+    private final ClientService userService;
     private final AbsSender absSender;
 
     @Autowired
-    public ContactMessageHandler(UserService userService, @Lazy AbsSender absSender) {
+    public ContactMessageHandler(ClientService userService, @Lazy AbsSender absSender) {
         this.userService = userService;
         this.absSender = absSender;
     }

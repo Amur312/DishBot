@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import tg.bot.model.Client;
 import tg.bot.model.Product;
 import tg.bot.repository.ProductRepository;
 
@@ -26,9 +27,11 @@ public class ProductService {
     private static final int PRODUCTS_PER_PAGE = 10;
     private final ProductRepository productRepository;
     private final AbsSender absSender;
-    public ProductService(ProductRepository productRepository, @Lazy AbsSender absSender) {
+    private final ClientService clientService;
+    public ProductService(ProductRepository productRepository, @Lazy AbsSender absSender, ClientService clientService) {
         this.productRepository = productRepository;
         this.absSender = absSender;
+        this.clientService = clientService;
     }
 
     public List<Product> findAllProducts() {
@@ -169,4 +172,5 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product with id " + id + " was not found."));
     }
+
 }

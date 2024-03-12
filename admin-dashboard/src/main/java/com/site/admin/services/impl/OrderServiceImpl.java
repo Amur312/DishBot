@@ -21,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findById(Integer id) {
+    public Order findById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("Id of Order should not be NULL");
         }
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("Id of Order should not be NULL");
         }

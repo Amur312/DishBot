@@ -1,4 +1,14 @@
 package tg.bot.repository;
 
-public class OrderRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import tg.bot.model.Client;
+import tg.bot.model.Order;
+import tg.bot.model.OrderStatus;
+
+import java.util.Optional;
+
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Long> {
+    Optional<Order> findByClientAndStatus(Client client, OrderStatus status);
 }

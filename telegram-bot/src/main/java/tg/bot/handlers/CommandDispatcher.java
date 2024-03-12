@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import tg.bot.handlers.Impl.IMessageHandler;
 import tg.bot.handlers.Impl.UpdateHandler;
-import tg.bot.model.User;
+import tg.bot.model.Client;
 import tg.bot.model.enums.BotState;
 import tg.bot.model.enums.CommandBot;
 import tg.bot.service.*;
@@ -25,23 +25,25 @@ import static tg.bot.util.MessageUtils.handleTextMessage;
 @Component
 public class CommandDispatcher {
     private final Map<CommandBot, UpdateHandler> handlers = new HashMap<>();
-    private final UserService userService;
+    private final ClientService userService;
     private final ConvertEmojiToCommand utilEmoji;
     private final AbsSender absSender;
     private final Map<Class<?>, IMessageHandler> messageHandlers = new HashMap<>();
     private final CategoryService categoryService;
     private final CatalogService catalogService;
     private final ProductService productService;
+    private  final OrderService orderService;
     @Autowired
-    public CommandDispatcher(UserService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender,
+    public CommandDispatcher(ClientService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender,
                              List<IMessageHandler> messageHandlersList, CategoryService categoryService,
-                             CatalogService catalogService, ProductService productService) {
+                             CatalogService catalogService, ProductService productService, OrderService orderService) {
         this.userService = userService;
         this.utilEmoji = utilEmoji;
         this.absSender = absSender;
         this.categoryService = categoryService;
         this.catalogService = catalogService;
         this.productService = productService;
+        this.orderService = orderService;
         messageHandlersList.forEach(handler -> messageHandlers.put(handler.getClass(), handler));
     }
 
@@ -51,7 +53,8 @@ public class CommandDispatcher {
 
     public void dispatch(Update update) {
         if (update.hasCallbackQuery()) {
-            CallbackQueryHandler callbackHandler = new CallbackQueryHandler(absSender, categoryService,catalogService, productService);
+            CallbackQueryHandler callbackHandler = new CallbackQueryHandler(absSender, categoryService,catalogService,
+                    productService, orderService);
             callbackHandler.handleCallbackQuery(update);
         }
         if (update.hasMessage()) {
@@ -63,7 +66,7 @@ public class CommandDispatcher {
                     contactHandler.handle(message);
                 }
             } else if (message.hasText()) {
-                User user = userService.findByChatId(message.getChatId()).orElse(null);
+                Client user = userService.findByChatId(message.getChatId()).orElse(null);
                 if (user != null && (user.getState() == BotState.AWAITING_FIRST_NAME || user.getState() == BotState.AWAITING_LAST_NAME)) {
                     IMessageHandler textHandler = messageHandlers.get(UserRegistrationHandler.class);
                     if (textHandler != null) {

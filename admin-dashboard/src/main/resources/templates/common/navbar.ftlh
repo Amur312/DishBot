@@ -14,8 +14,6 @@
         <li><a href="categories"><i class="fa fa-folder-open mr-1"></i>Categories</a></li>
         <li><a href="products"><i class="fa fa-archive mr-1"></i>Products</a></li>
         <li><a href="orders"><i class="fa fa-cart-arrow-down mr-1"></i>Orders</a></li>
-        <li><a href="broadcasts/add"><i class="fa fa-comment mr-1"></i>Broadcasts</a></li>
-        <li><a href="messages"><i class="fa fa-envelope mr-1"></i>Messages</a></li>
       </ul>
 
       <div class="navbar-text pull-right">

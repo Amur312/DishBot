@@ -2,30 +2,30 @@ package tg.bot.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tg.bot.model.User;
+import tg.bot.model.Client;
 import tg.bot.model.enums.BotState;
-import tg.bot.repository.UserRepository;
+import tg.bot.repository.ClientRepository;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
-    private final UserRepository userRepository;
+public class ClientService {
+    private final ClientRepository userRepository;
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public ClientService(ClientRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     public void createUserIfNotExists(long chatId, String tgName, String phoneNumber) {
         if (!userRepository.existsByChatId(chatId)) {
-            User newUser = new User();
+            Client newUser = new Client();
             newUser.setChatId(chatId);
             newUser.setTgName(tgName);
             newUser.setPhoneNumber(phoneNumber);
             userRepository.save(newUser);
         }
     }
-    public Optional<User> findByChatId(long chatId) {
+    public Optional<Client> findByChatId(long chatId) {
         return userRepository.findByChatId(chatId);
     }
     public void updateFirstName(long chatId, String firstName) {

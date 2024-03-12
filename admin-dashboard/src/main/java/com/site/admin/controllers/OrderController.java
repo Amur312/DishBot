@@ -51,7 +51,7 @@ public class OrderController {
     }
 
     @PostMapping("/delete")
-    public String deleteOrder(@RequestParam Integer id) {
+    public String deleteOrder(@RequestParam Long id) {
         orderService.deleteById(id);
         return "redirect:/orders";
     }

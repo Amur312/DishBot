@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.site.admin.models.entities.Client;
 
 @Repository
-public interface ClientRepository extends JpaRepository<Client, Integer> {
+public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    List<Client> findAllByActive(boolean active);
 
 }

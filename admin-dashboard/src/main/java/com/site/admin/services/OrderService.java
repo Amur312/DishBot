@@ -6,7 +6,7 @@ import com.site.admin.models.entities.Order;
 
 public interface OrderService {
 
-    Order findById(Integer id);
+    Order findById(Long id);
 
     List<Order> findAll();
 
@@ -14,6 +14,6 @@ public interface OrderService {
 
     Order update(Order order);
 
-    void deleteById(Integer id);
+    void deleteById(Long id);
 
 }

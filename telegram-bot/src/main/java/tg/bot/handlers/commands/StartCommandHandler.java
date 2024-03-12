@@ -13,9 +13,9 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import tg.bot.handlers.Impl.UpdateHandler;
 import tg.bot.util.MessageUtils;
 import tg.bot.view.MainMenuService;
-import tg.bot.model.User;
+import tg.bot.model.Client;
 import tg.bot.model.enums.CommandBot;
-import tg.bot.repository.UserRepository;
+import tg.bot.repository.ClientRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +24,12 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class StartCommandHandler implements UpdateHandler {
-    private final UserRepository userRepository;
+    private final ClientRepository userRepository;
     private final AbsSender absSender;
     private final MainMenuService mainMenuService;
     private MessageUtils messageUtils;
     @Autowired
-    public StartCommandHandler(UserRepository userRepository, @Lazy AbsSender absSender, MainMenuService mainMenuService) {
+    public StartCommandHandler(ClientRepository userRepository, @Lazy AbsSender absSender, MainMenuService mainMenuService) {
         this.userRepository = userRepository;
         this.absSender = absSender;
         this.mainMenuService = mainMenuService;
@@ -50,7 +50,7 @@ public class StartCommandHandler implements UpdateHandler {
 
     private void handleStart(long chatId, String text) {
         if ("/start".equals(text)) {
-            Optional<User> existingUser = userRepository.findByChatId(chatId);
+            Optional<Client> existingUser = userRepository.findByChatId(chatId);
             if (!existingUser.isPresent()) {
                 requestPhoneNumber(chatId);
             } else {

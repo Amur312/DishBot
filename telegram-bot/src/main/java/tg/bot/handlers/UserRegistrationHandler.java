@@ -7,26 +7,26 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import tg.bot.handlers.Impl.IMessageHandler;
-import tg.bot.model.User;
+import tg.bot.model.Client;
 import tg.bot.model.enums.BotState;
-import tg.bot.service.UserService;
+import tg.bot.service.ClientService;
 
 import static tg.bot.util.MessageUtils.sendMessage;
 @Slf4j
 @Component
 public class UserRegistrationHandler implements IMessageHandler {
-    private final UserService userService;
+    private final ClientService userService;
     private final AbsSender absSender;
 
     @Autowired
-    public UserRegistrationHandler(UserService userService, @Lazy AbsSender absSender) {
+    public UserRegistrationHandler(ClientService userService, @Lazy AbsSender absSender) {
         this.userService = userService;
         this.absSender = absSender;
     }
 
     @Override
     public void handle(Message message) {
-        User user = userService.findByChatId(message.getChatId()).orElse(null);
+        Client user = userService.findByChatId(message.getChatId()).orElse(null);
         if (user != null) {
             switch (user.getState()) {
                 case AWAITING_FIRST_NAME:

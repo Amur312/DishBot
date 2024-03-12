@@ -31,7 +31,7 @@ public class Product {
 
     @Column(name = "price", nullable = false)
     @NotNull
-    @Min(value = 1, message = "Minimum price is 1 $")
+    @Min(value = 1, message = "Minimum price is 1 UZS")
     private BigDecimal price;
 
     @Lob
