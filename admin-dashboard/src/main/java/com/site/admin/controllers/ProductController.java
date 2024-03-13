@@ -57,7 +57,6 @@ public class ProductController {
             model.addAttribute("categories", categoryFinder.findAll());
             return "main/products/add";
         }
-        System.out.println("PRODUCT -----------> " + product);
         productService.save(product, photo);
         return "redirect:/products";
     }

@@ -29,8 +29,6 @@ public class OrderService {
 
         Product product = productService.findProductById(productId);
         Order order = findOrCreateOrderForClient(client, product);
-        System.out.println("PRODUCt ----------------->  " + product);
-        System.out.println("order ----------------->  " + order);
         addProductToOrder(order, product);
         repository.save(order);
     }
