@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
 
 import no.api.freemarker.java8.Java8ObjectWrapper;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
 @Slf4j
 @Configuration
 public class FreemarkerConfig implements BeanPostProcessor {
