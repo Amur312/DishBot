@@ -1,5 +1,5 @@
 FROM openjdk:17
 
-COPY target/shop-telegram-bot-jar-with-dependencies.jar shop-telegram-bot.jar
+COPY target/tg-telegram-bot-jar-with-dependencies.jar tg-telegram-bot.jar
 
-ENTRYPOINT ["java","-jar","/shop-telegram-bot.jar"]
+ENTRYPOINT ["java","-jar","/tg-telegram-bot.jar"]
