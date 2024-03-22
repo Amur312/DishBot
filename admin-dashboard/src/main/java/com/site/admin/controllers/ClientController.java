@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/clients")
 public class ClientController {
@@ -32,11 +30,16 @@ public class ClientController {
         return "main/clients/all";
     }
 
-    @GetMapping("/edit/{client}")
-    public String showEditClient(Model model, @PathVariable Client client) {
+    @GetMapping("/edit/{id}")
+    public String showEditClient(Model model, @PathVariable Long id) {
+        Client client = clientService.findById(id);
+        if (client == null) {
+            return "redirect:/clients"; // не забыть закрыть затычку страницой с ошибкой!
+        }
         model.addAttribute("client", client);
         return "main/clients/edit";
     }
+
 
     @PostMapping("/update")
     public String updateClient(@Valid Client client, BindingResult bindingResult, Model model) {

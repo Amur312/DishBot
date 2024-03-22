@@ -57,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteById(Long id) {
         Assert.notNull(id, "Идентификатор заказа не должен быть пустым");
+
         repository.deleteById(id);
     }
 
