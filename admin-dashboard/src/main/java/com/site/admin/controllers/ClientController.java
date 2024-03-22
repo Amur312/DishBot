@@ -34,7 +34,7 @@ public class ClientController {
     public String showEditClient(Model model, @PathVariable Long id) {
         Client client = clientService.findById(id);
         if (client == null) {
-            return "redirect:/clients"; // не забыть закрыть затычку страницой с ошибкой!
+            return "redirect:/clients"; // не забыть закрыть затычку страницой с ошибкой!!
         }
         model.addAttribute("client", client);
         return "main/clients/edit";
