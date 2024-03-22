@@ -29,15 +29,15 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
     @Override
     public String store(MultipartFile photo) {
         if (photo == null || photo.isEmpty()) {
-            throw new IllegalArgumentException("Photo should not be null or empty");
+            throw new IllegalArgumentException("Фотография не должна быть пустой");
         }
 
         if (photo.getSize() > MAX_SIZE) {
-            throw new IllegalArgumentException("File size exceeds the allowable limit");
+            throw new IllegalArgumentException("Размер файла превышает допустимый предел");
         }
 
         if (!photo.getContentType().startsWith("image/")) {
-            throw new IllegalArgumentException("Invalid file type");
+            throw new IllegalArgumentException("Недопустимый тип файла");
         }
 
         String fileName = UUID.randomUUID() + FILE_EXTENSION;
@@ -47,8 +47,8 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
             Files.createDirectories(filePath.getParent());
             photo.transferTo(filePath.toFile());
         } catch (IOException e) {
-            log.error("Failed to save photo", e);
-            throw new SaveFileException("Failed to save photo", e);
+            log.error("Не удалось сохранить фотографию", e);
+            throw new SaveFileException("Не удалось сохранить фотографию", e);
         }
 
         return serverUrl + IMAGE_FOLDER + fileName;

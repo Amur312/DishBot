@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 public class Client {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "last_name")

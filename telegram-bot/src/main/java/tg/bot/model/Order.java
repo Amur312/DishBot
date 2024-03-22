@@ -7,6 +7,7 @@ import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
+import tg.bot.model.enums.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

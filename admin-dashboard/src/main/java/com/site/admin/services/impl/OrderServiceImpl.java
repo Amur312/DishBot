@@ -1,14 +1,16 @@
 package com.site.admin.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.site.admin.exceptions.ValidationException;
+import com.site.admin.models.entities.Order;
 import com.site.admin.repositories.OrderRepository;
+import com.site.admin.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.site.admin.models.entities.Order;
-import com.site.admin.services.OrderService;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -21,12 +23,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findById(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id of Order should not be NULL");
-        }
-
-        return repository.findById(id).orElse(null);
+    public Optional<Order> findById(Long id) {
+        Assert.notNull(id, "Идентификатор заказа не должен быть пустым");
+        return repository.findById(id);
     }
 
     @Override
@@ -34,36 +33,30 @@ public class OrderServiceImpl implements OrderService {
         return repository.findAll();
     }
 
+    @Transactional
     @Override
     public Order save(Order order) {
-        if (order == null) {
-            throw new IllegalArgumentException("Order should not be NULL");
-        }
-        if (order.getId() != null) {
-            throw new ValidationException("Id of Order should be NULL");
-        }
+        Assert.notNull(order, "Заказ не должен быть пустым");
+        Assert.isNull(order.getId(), "Идентификатор заказа должен быть пустым при создании нового заказа");
 
         return repository.save(order);
     }
 
+    @Transactional
     @Override
     public Order update(Order order) {
-        if (order == null) {
-            throw new IllegalArgumentException("Order should not be NULL");
-        }
-        if (order.getId() == null) {
-            throw new ValidationException("Id of Order should not be NULL");
-        }
+        Assert.notNull(order, "Заказ не должен быть пустым");
+        Assert.notNull(order.getId(), "Идентификатор заказа не должен быть пустым при обновлении");
+
+        repository.findById(order.getId())
+                .orElseThrow(() -> new ValidationException("Заказ с данным идентификатором не существует, обновление невозможно"));
 
         return repository.save(order);
     }
 
     @Override
     public void deleteById(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id of Order should not be NULL");
-        }
-
+        Assert.notNull(id, "Идентификатор заказа не должен быть пустым");
         repository.deleteById(id);
     }
 

@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tg.bot.model.Client;
 import tg.bot.model.Order;
-import tg.bot.model.OrderStatus;
+import tg.bot.model.enums.OrderStatus;
 
 import java.util.Optional;
 

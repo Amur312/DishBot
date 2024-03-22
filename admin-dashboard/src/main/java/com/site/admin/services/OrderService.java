@@ -1,12 +1,13 @@
 package com.site.admin.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.site.admin.models.entities.Order;
 
 public interface OrderService {
 
-    Order findById(Long id);
+    Optional<Order> findById(Long id);
 
     List<Order> findAll();
 
