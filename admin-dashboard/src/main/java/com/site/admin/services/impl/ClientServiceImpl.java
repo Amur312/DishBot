@@ -6,6 +6,7 @@ import com.site.admin.exceptions.ValidationException;
 import com.site.admin.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.site.admin.models.entities.Client;
 import com.site.admin.services.ClientService;
@@ -22,10 +23,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client findById(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id of Client should not be NULL");
-        }
-
+        Assert.notNull(id, "Идентификатор клиента не должен быть пустым.");
         return repository.findById(id).orElse(null);
     }
 
@@ -36,19 +34,10 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client update(Client client) {
-        if (client == null) {
-            throw new IllegalArgumentException("Client should not be NULL");
-        }
-        if (client.getId() == null) {
-            throw new ValidationException("Id of Client should not be NULL");
-        }
-        if (client.getChatId() == null) {
-            throw new ValidationException("ChatId if Client should not be NULL");
-        }
+        Assert.notNull(client, "Клиент не должен быть пустым.");
+        Assert.notNull(client.getId(), "Идентификатор клиента не должен быть пустым.");
+        Assert.notNull(client.getChatId(), "Идентификатор чата клиента не должен быть пустым.");
 
         return repository.save(client);
     }
-
-
-
 }

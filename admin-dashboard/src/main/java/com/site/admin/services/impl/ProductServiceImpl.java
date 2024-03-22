@@ -1,22 +1,21 @@
 package com.site.admin.services.impl;
 
 import java.util.List;
-
-import com.site.admin.exceptions.ValidationException;
-import com.site.admin.services.PhotoStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.site.admin.exceptions.ValidationException;
 import com.site.admin.models.entities.Product;
 import com.site.admin.repositories.ProductRepository;
+import com.site.admin.services.PhotoStorageService;
 import com.site.admin.services.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
-    
     private final PhotoStorageService photoStorageService;
 
     @Autowired
@@ -27,9 +26,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(Integer id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id of Product should not be NULL");
-        }
+        Assert.notNull(id, "Идентификатор продукта не должен быть пустым.");
         return repository.findById(id).orElse(null);
     }
 
@@ -40,39 +37,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product save(Product product, MultipartFile photo) {
-        if (product == null) {
-            throw new IllegalArgumentException("Product should not be NULL");
-        }
-        if (product.getId() != null) {
-            throw new ValidationException("Id of Product should be NULL");
-        }
+        Assert.notNull(product, "Продукт не должен быть пустым.");
+        Assert.isNull(product.getId(), "Идентификатор продукта должен быть пустым при создании нового продукта.");
 
-        product.setPhotoUrl(photoStorageService.store(photo));
+        if (!photo.isEmpty()) {
+            String photoUrl = photoStorageService.store(photo);
+            product.setPhotoUrl(photoUrl);
+        }
         return repository.save(product);
     }
 
     @Override
     public Product update(Product product, MultipartFile photo) {
-        if (product == null) {
-            throw new IllegalArgumentException("Product should not be NULL");
-        }
-        if (product.getId() == null) {
-            throw new ValidationException("Id of Product should not be NULL");
-        }
+        Assert.notNull(product, "Продукт не должен быть пустым.");
+        Assert.notNull(product.getId(), "Идентификатор продукта не должен быть пустым при обновлении продукта.");
 
         if (!photo.isEmpty()) {
-            product.setPhotoUrl(photoStorageService.store(photo));
+            String photoUrl = photoStorageService.store(photo);
+            product.setPhotoUrl(photoUrl);
         }
         return repository.save(product);
     }
 
     @Override
     public void deleteById(Integer id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id of Product should not be NULL");
-        }
-
+        Assert.notNull(id, "Идентификатор продукта не должен быть пустым.");
         repository.deleteById(id);
     }
-
 }
