@@ -5,8 +5,8 @@
 /home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/Application.java
 /home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/repositories/CategoryRepository.java
 /home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/exceptions/ValidationException.java
-/home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/models/entities/OrderStatus.java
 /home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/exceptions/SaveFileException.java
+/home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/models/enums/OrderStatus.java
 /home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/controllers/ProductController.java
 /home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/models/entities/Order.java
 /home/amur312/Рабочий стол/DishBot/admin-dashboard/src/main/java/com/site/admin/services/impl/OrderServiceImpl.java

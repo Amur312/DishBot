@@ -164,6 +164,7 @@ public class ProductService {
         try {
             absSender.execute(sendPhotoRequest);
         } catch (TelegramApiException e) {
+            System.out.println("sendProductPhoto");
             e.printStackTrace();
         }
     }

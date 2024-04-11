@@ -3,7 +3,6 @@
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/model/Client.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/handlers/UserRegistrationHandler.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/bot/TelegramBot.java
-/home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/model/OrderStatus.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/handlers/commands/ContactsCommandHandler.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/repository/ClientRepository.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/handlers/CommandDispatcher.java
@@ -29,6 +28,7 @@
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/service/CatalogService.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/handlers/ContactMessageHandler.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/handlers/Impl/IMessageHandler.java
+/home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/model/enums/OrderStatus.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/util/ConvertEmojiToCommand.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/repository/CategoryRepository.java
 /home/amur312/Рабочий стол/DishBot/telegram-bot/src/main/java/tg/bot/config/BotConfig.java

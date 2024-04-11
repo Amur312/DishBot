@@ -27,6 +27,7 @@ public class CallbackQueryHandler {
     private final OrderService orderService;
     private final int PRODUCTS_PER_PAGE = 10;
     AtomicInteger currentPage = new AtomicInteger();
+
     @Autowired
     public CallbackQueryHandler(@Lazy AbsSender absSender, CategoryService categoryService,
                                 CatalogService catalogService, ProductService productService, OrderService orderService) {
@@ -36,6 +37,7 @@ public class CallbackQueryHandler {
         this.productService = productService;
         this.orderService = orderService;
     }
+
     public void handleCallbackQuery(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         String data = update.getCallbackQuery().getData();
@@ -53,12 +55,19 @@ public class CallbackQueryHandler {
             handleBackToPageRequest(chatId, data, messageId);
         } else if (data.startsWith("ADD_TO_CART_")) {
             handleAddToCart(chatId, data);
+        } else if (data.startsWith("BASKET_")) {
+            handleBasket(chatId, data);
         }
+    }
+
+    private void handleBasket(Long chatId, String data) {
+        String[] parts = data.split("_");
+        Long clintId = Long.parseLong(parts[1]);
+        System.out.println("Client id = " + clintId);
     }
 
     private void handleAddToCart(Long chatId, String data) {
         String[] parts = data.split("_");
-        System.out.println("PARTS-------------------> " + Arrays.toString(parts));
         Long productId = Long.parseLong(parts[3]);
 
         Product product = productService.findProductById(productId);
@@ -66,6 +75,7 @@ public class CallbackQueryHandler {
         orderService.addToCart(chatId, productId);
         sendMessage(absSender, chatId, "Товар добавлен в корзину!");
     }
+
     private void handleBackToPageRequest(Long chatId, String data, Integer messageId) {
         String[] parts = data.split("_");
         try {

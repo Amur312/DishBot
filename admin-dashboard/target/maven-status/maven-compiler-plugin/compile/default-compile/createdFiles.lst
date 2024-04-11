@@ -1,11 +1,11 @@
 com/site/admin/services/ClientService.class
 com/site/admin/configs/FreemarkerConfig.class
 com/site/admin/services/impl/OrderServiceImpl.class
+com/site/admin/models/enums/OrderStatus.class
 com/site/admin/services/impl/PhotoStorageServiceImpl.class
 com/site/admin/configs/PasswordEncoderConfig.class
 com/site/admin/models/entities/OrderItem.class
 com/site/admin/services/impl/CategoryServiceImpl.class
-com/site/admin/models/entities/OrderStatus.class
 com/site/admin/exceptions/SaveFileException.class
 com/site/admin/services/TelegramService.class
 com/site/admin/utils/ControllerUtils.class

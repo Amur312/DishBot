@@ -3,7 +3,6 @@ tg/bot/model/enums/CommandBot.class
 tg/bot/handlers/CommandDispatcher.class
 tg/bot/view/MainMenuService.class
 tg/bot/model/enums/BotState.class
-tg/bot/model/OrderStatus.class
 tg/bot/handlers/UserRegistrationHandler$1.class
 tg/bot/handlers/commands/CatalogCommandHandler.class
 tg/bot/util/ConvertEmojiToCommand.class
@@ -31,5 +30,6 @@ tg/bot/model/OrderItem.class
 tg/bot/service/ClientService.class
 tg/bot/bot/TelegramBot.class
 tg/bot/handlers/Impl/IMessageHandler.class
+tg/bot/model/enums/OrderStatus.class
 tg/bot/model/Client.class
 tg/bot/model/Category.class
