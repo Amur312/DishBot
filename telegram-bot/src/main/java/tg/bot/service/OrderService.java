@@ -34,7 +34,7 @@ public class OrderService {
         repository.save(order);
     }
 
-    private Order findOrCreateOrderForClient(Client client, Product product) {
+    public Order findOrCreateOrderForClient(Client client, Product product) {
         Optional<Order> existingOrder = repository.findByClientAndStatus(client, OrderStatus.WAITING);
         if (existingOrder.isPresent()) {
             return existingOrder.get();
@@ -44,7 +44,7 @@ public class OrderService {
             newOrder.setStatus(OrderStatus.WAITING);
             newOrder.setAmount(product.getPrice());
             newOrder.setCreatedDate(java.time.LocalDateTime.now());
-
+            System.out.println(newOrder);
             return repository.save(newOrder);
         }
     }

@@ -38,7 +38,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    @Transactional
+
     public List<Product> findProductsByCategoryId(Long categoryId) {
         return productRepository.findByCategoryId(categoryId);
     }
