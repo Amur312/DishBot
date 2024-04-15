@@ -1,5 +1,6 @@
 package tg.bot.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,15 +13,14 @@ import tg.bot.model.enums.CommandBot;
 
 import java.util.Map;
 
+@Slf4j
 public class MessageUtils {
-    private static final Logger log = LoggerFactory.getLogger(MessageUtils.class);
-
     /**
      * Отправляет текстовое сообщение пользователю.
      *
      * @param absSender экземпляр AbsSender для отправки сообщения через Telegram API
-     * @param chatId ID чата для отправки сообщения
-     * @param text текст сообщения
+     * @param chatId    ID чата для отправки сообщения
+     * @param text      текст сообщения
      */
     public static void sendMessage(AbsSender absSender, long chatId, String text) {
         SendMessage message = new SendMessage();
@@ -38,7 +38,7 @@ public class MessageUtils {
      * Отправляет сообщение об ошибке пользователю в случае возникновения исключения при отправке основного сообщения.
      *
      * @param absSender экземпляр AbsSender для отправки сообщения через Telegram API
-     * @param chatId ID чата для отправки сообщения об ошибке
+     * @param chatId    ID чата для отправки сообщения об ошибке
      */
     private static void sendErrorMessage(AbsSender absSender, long chatId) {
         SendMessage message = new SendMessage();
@@ -56,7 +56,7 @@ public class MessageUtils {
      * такие как клавиатура.
      *
      * @param absSender экземпляр AbsSender для отправки сообщения через Telegram API
-     * @param message объект SendMessage с настроенными параметрами сообщения
+     * @param message   объект SendMessage с настроенными параметрами сообщения
      */
     public static void sendMessage(AbsSender absSender, SendMessage message) {
         try {
@@ -66,6 +66,7 @@ public class MessageUtils {
             sendErrorMessage(absSender, Long.parseLong(message.getChatId()));
         }
     }
+
     public static void handleTextMessage(Update update, Message message, Map<CommandBot, UpdateHandler> handlers, ConvertEmojiToCommand utilEmoji) {
         String commandText = message.getText().split(" ")[0];
 

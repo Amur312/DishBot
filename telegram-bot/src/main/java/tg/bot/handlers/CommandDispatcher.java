@@ -32,7 +32,8 @@ public class CommandDispatcher {
     private final CategoryService categoryService;
     private final CatalogService catalogService;
     private final ProductService productService;
-    private  final OrderService orderService;
+    private final OrderService orderService;
+
     @Autowired
     public CommandDispatcher(ClientService userService, ConvertEmojiToCommand utilEmoji, @Lazy AbsSender absSender,
                              List<IMessageHandler> messageHandlersList, CategoryService categoryService,
@@ -53,7 +54,7 @@ public class CommandDispatcher {
 
     public void dispatch(Update update) {
         if (update.hasCallbackQuery()) {
-            CallbackQueryHandler callbackHandler = new CallbackQueryHandler(absSender, categoryService,catalogService,
+            CallbackQueryHandler callbackHandler = new CallbackQueryHandler(absSender, categoryService, catalogService,
                     productService, orderService);
             callbackHandler.handleCallbackQuery(update);
         }

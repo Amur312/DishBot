@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import tg.bot.model.Category;
 import tg.bot.model.Product;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,7 +25,6 @@ public class CallbackQueryHandler {
     private final ProductService productService;
     private final OrderService orderService;
     private final int PRODUCTS_PER_PAGE = 10;
-    AtomicInteger currentPage = new AtomicInteger();
 
     @Autowired
     public CallbackQueryHandler(@Lazy AbsSender absSender, CategoryService categoryService,

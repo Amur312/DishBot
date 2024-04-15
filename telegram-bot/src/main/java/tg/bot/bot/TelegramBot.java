@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import tg.bot.config.BotConfig;
 import tg.bot.handlers.CommandDispatcher;
 import tg.bot.handlers.Impl.UpdateHandler;
-import tg.bot.util.ConvertEmojiToCommand;
+
 
 import java.util.List;
 
@@ -19,8 +19,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Autowired
     public TelegramBot(BotConfig botConfig,
-                       List<UpdateHandler> handlers,
-                       ConvertEmojiToCommand utilEmoji, CommandDispatcher dispatcher) {
+                       List<UpdateHandler> handlers, CommandDispatcher dispatcher) {
         this.botConfig = botConfig;
 
         this.dispatcher = dispatcher;
