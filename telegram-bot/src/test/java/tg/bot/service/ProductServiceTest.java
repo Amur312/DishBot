@@ -31,6 +31,7 @@ public class ProductServiceTest {
     public void setup(){
         MockitoAnnotations.openMocks(this);
     }
+
     private List<Product> getProducts(){
         Product product1 = new Product();
         Product product2 = new Product();
@@ -64,7 +65,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void findByCategoryId(){
+    public void testFindByCategoryId(){
         List<Product> expectedProducts = getProducts();
         when(productRepository.findByCategoryId(1L)).thenReturn(expectedProducts);
 
@@ -75,7 +76,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void findProductById(){
+    public void testFindProductById(){
         Product expectedProduct = new Product();
         expectedProduct.setId(1L);
         expectedProduct.setName("Test Product");
