@@ -40,7 +40,6 @@ public class CallbackQueryHandler {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         String data = update.getCallbackQuery().getData();
         Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
-
         if (data.startsWith("CATEGORY_")) {
             handleCategoryRequest(chatId, data, messageId);
         } else if (data.startsWith("PRODUCT_")) {
@@ -61,7 +60,7 @@ public class CallbackQueryHandler {
     private void handleBasket(Long chatId, String data) {
         String[] parts = data.split("_");
         Long clintId = Long.parseLong(parts[1]);
-        System.out.println("Client id = " + clintId);
+
     }
 
     private void handleAddToCart(Long chatId, String data) {

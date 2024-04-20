@@ -62,7 +62,6 @@ public class CommandDispatcher {
             Message message = update.getMessage();
             if (message.hasContact()) {
                 IMessageHandler contactHandler = messageHandlers.get(ContactMessageHandler.class);
-                log.info("contactHandler = " + contactHandler);
                 if (contactHandler != null) {
                     contactHandler.handle(message);
                 }

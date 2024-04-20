@@ -1,11 +1,17 @@
 package tg.bot.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "orders_items")
 @Data
 public class OrderItem {
@@ -28,7 +34,6 @@ public class OrderItem {
     @Column(name = "product_price", nullable = false)
     private BigDecimal productPrice;
 
-    public OrderItem() {
-    }
-
+    private Integer quantity;
+    private Long ClientId;
 }

@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+
     @Autowired
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
@@ -19,6 +20,7 @@ public class CategoryService {
     public List<Category> findSubcategoriesByParentId(Long parentId) {
         return categoryRepository.findByParentCategory_Id(parentId);
     }
+
     public List<Category> findAllRootCategories() {
         return categoryRepository.findByParentCategoryIsNull();
     }

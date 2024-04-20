@@ -27,10 +27,11 @@ public class OrderService {
     public void addToCart(Long chatId, Long productId) {
         Client client = clientService.findByChatId(chatId)
                 .orElseThrow(() -> new EntityNotFoundException("Клиент не найден"));
-
         Product product = productService.findProductById(productId);
         Order order = findOrCreateOrderForClient(client, product);
-        addProductToOrder(order, product);
+        Long cleintId = client.getId();
+        int quantity = 1;
+        addProductToOrder(order, product, cleintId, quantity);
         repository.save(order);
     }
 
@@ -49,13 +50,23 @@ public class OrderService {
         }
     }
 
-    private void addProductToOrder(Order order, Product product) {
+    private void addProductToOrder(Order order, Product product, Long cleintId, int quantity) {
+        for (OrderItem item : order.getItems()) {
+            if (item.getProduct().getId().equals(product.getId())) {
+                item.setQuantity(item.getQuantity() + quantity);
+                return;
+            }
+        }
         OrderItem orderItem = new OrderItem();
+
         orderItem.setOrder(order);
         orderItem.setProduct(product);
         orderItem.setProductName(product.getName());
         orderItem.setProductPrice(product.getPrice());
+        orderItem.setClientId(cleintId);
+        orderItem.setQuantity(quantity);
 
         order.getItems().add(orderItem);
     }
+
 }

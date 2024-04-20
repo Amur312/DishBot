@@ -3,7 +3,10 @@ package tg.bot.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "orders")
 @Data
 public class Order {
@@ -44,7 +50,12 @@ public class Order {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<OrderItem> items = new ArrayList<>();
 
-    public Order() {
+    @Override
+    public String toString() {
+        return "Order [id=" + id +
+                ", client=" + client +
+                ", createdDate=" + createdDate +
+                ", status=" + status +
+                ", amount=" + amount + "]";
     }
-
 }

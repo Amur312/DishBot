@@ -9,8 +9,6 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import tg.bot.handlers.Impl.UpdateHandler;
 import tg.bot.model.enums.CommandBot;
 import tg.bot.util.ConvertEmojiToCommand;
-import tg.bot.util.MessageUtils;
-
 import static tg.bot.util.MessageUtils.sendMessage;
 
 @Slf4j

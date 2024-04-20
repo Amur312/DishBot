@@ -4,11 +4,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "products")
 @Data
 public class Product {
@@ -35,8 +41,5 @@ public class Product {
     @Lob
     @Column(name = "photo_url", nullable = false)
     private String photoUrl;
-
-    public Product() {
-    }
 
 }
