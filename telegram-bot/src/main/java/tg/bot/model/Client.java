@@ -1,10 +1,16 @@
 package tg.bot.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import tg.bot.model.enums.BotState;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "clients")
 @Data
 public class Client {
@@ -32,8 +38,6 @@ public class Client {
     private BotState state = BotState.NONE;
     @Column(name = "address_client")
     private String address;
-    public Client() {
-    }
 
     public Client(String lastName, String firstName, long chatId, String phoneNumber) {
         this.lastName = lastName;
@@ -48,5 +52,12 @@ public class Client {
         this.tgName = tgName;
         this.phoneNumber = phoneNumber;
         this.state = BotState.NONE;
+    }
+
+    @Override
+    public String toString() {
+        return "Client [id=" + id + ", chatId=" + chatId + ", lastName=" + lastName +
+                ", firstName=" + firstName + ", phoneNumber=" + phoneNumber + ", tgName=" +
+                tgName + ", address=" + address + "]";
     }
 }

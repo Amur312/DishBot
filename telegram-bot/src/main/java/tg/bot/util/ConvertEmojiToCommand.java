@@ -13,6 +13,8 @@ public class ConvertEmojiToCommand {
             return "/SEARCH";
         } else if (text.contains("\u260E")) {
             return "/CONTACTS";
+        } else if(text.contains("\uD83D\uDCC4")){
+            return "/ORDER_HISTORY";
         }
         return text;
     }

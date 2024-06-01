@@ -8,6 +8,7 @@ import tg.bot.model.*;
 import tg.bot.model.enums.OrderStatus;
 import tg.bot.repository.OrderRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,10 +37,9 @@ public class OrderService {
     }
 
     public Order findOrCreateOrderForClient(Client client, Product product) {
-        Optional<Order> existingOrder = repository.findByClientAndStatus(client, OrderStatus.WAITING);
-        System.out.println("Existing order: " + existingOrder);
-        if (existingOrder.isPresent()) {
-            return existingOrder.get();
+        List<Order> existingOrder = repository.findByClientAndStatus(client, OrderStatus.WAITING);
+        if (!existingOrder.isEmpty()) {
+            return existingOrder.get(0);
         } else {
             Order newOrder = new Order();
             newOrder.setClient(client);

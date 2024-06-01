@@ -17,7 +17,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final CommandDispatcher dispatcher;
 
-    @Autowired
     public TelegramBot(BotConfig botConfig,
                        List<UpdateHandler> handlers, CommandDispatcher dispatcher) {
         this.botConfig = botConfig;

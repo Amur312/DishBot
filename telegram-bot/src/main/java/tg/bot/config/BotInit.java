@@ -15,9 +15,13 @@ import tg.bot.bot.TelegramBot;
 @Component
 @Configuration
 public class BotInit {
-    Logger logger = LoggerFactory.getLogger(BotInit.class);
-    @Autowired
-    private TelegramBot bot;
+    private static final Logger logger = LoggerFactory.getLogger(BotInit.class);
+
+    private final TelegramBot bot;
+
+    public BotInit(TelegramBot bot) {
+        this.bot = bot;
+    }
 
     @EventListener({ContextRefreshedEvent.class})
     public void inti() throws TelegramApiException {
